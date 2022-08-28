@@ -97,9 +97,17 @@ Book Repo Schema:
 	publisher: {
 		type: String,
 		require: true
-	}
+	},
 	bookImage: {
 		type:String,
+		require: true
+	},
+	noOfCopies: {
+		type: Number,
+		require: true
+	},
+	availableCopies: {
+		type: Number,
 		require: true
 	}
 }
