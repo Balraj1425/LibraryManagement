@@ -16,6 +16,7 @@ collection Name: userDetails
 	6. phone no
 	7. password
 	8. accessToken
+	9. banStatus : default is false at time  of register
 	
 document Schema:
 {
@@ -49,6 +50,10 @@ document Schema:
 	},
 	accessToken: {
 		type: String
+	},
+	banStatus: {
+		type: Boolean,
+		require: true
 	}
 }		
 	
@@ -60,6 +65,7 @@ Books Repository DB:
 	5. Search keywords array
 	6. Type of book (fiction/thriller/action)
 	7. Publisher name
+	8. book Image
 
 Collection Name : BooksRepo	
 Book Repo Schema:
@@ -90,6 +96,10 @@ Book Repo Schema:
 	},
 	publisher: {
 		type: String,
+		require: true
+	}
+	bookImage: {
+		type:String,
 		require: true
 	}
 }
