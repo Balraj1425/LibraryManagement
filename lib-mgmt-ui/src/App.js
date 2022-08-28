@@ -5,25 +5,27 @@ import Login from "./components/login/Login";
 import Register from "./components/Register";
 import ARegister from "./components/admin/staffLogin/ARegister";
 import Navbar from "./components/navbar/Navbar";
+import Admin from "./components/admin/Admin";
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <Navbar/>
+    <Admin></Admin>
+    // <Router>
+    //   <div className="App">
+    //     <Navbar/>
 
-        <div className="auth-wrapper">
-          <div className="auth-inner">
-            <Routes>
-              <Route exact path="/" element={<Login />} />
-              <Route path="/sign-in" element={<Login />} />
-              <Route path="/sign-up" element={<Register />} />
-              <Route path="/staff-sign-up" element={<ARegister />} />
-            </Routes>
-          </div>
-        </div>
-      </div>
-    </Router>
+    //     <div className="auth-wrapper">
+    //       <div className="auth-inner">
+    //         <Routes>
+    //           <Route exact path="/" element={<Login />} />
+    //           <Route path="/sign-in" element={<Login />} />
+    //           <Route path="/sign-up" element={<Register />} />
+    //           <Route path="/staff-sign-up" element={<ARegister />} />
+    //         </Routes>
+    //       </div>
+    //     </div>
+    //   </div>
+    // </Router>
   );
 }
 
