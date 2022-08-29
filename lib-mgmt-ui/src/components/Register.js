@@ -37,6 +37,7 @@ const Register = () => {
             placeholder="Enter Password"
           />
         </div>
+
         <div className="mb-3">
           <div className="custom-control custom-checkbox">
             <input
