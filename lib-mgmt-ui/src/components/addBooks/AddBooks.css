@@ -1,0 +1,7 @@
+.addBook {
+  text-align: center;
+}
+.bookImage {
+  display: flex;
+  flex-direction: column;
+}
