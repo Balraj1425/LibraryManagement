@@ -8,14 +8,9 @@ import {
   MDBCardBody,
   MDBCardImage,
   MDBBtn,
-  MDBBreadcrumb,
-  MDBBreadcrumbItem,
-  MDBProgress,
-  MDBProgressBar,
-  MDBIcon,
-  MDBListGroup,
-  MDBListGroupItem,
+  MDBInput,
 } from "mdb-react-ui-kit";
+import "../profile/Profile.css";
 
 const Profile = (props) => {
   const [isEditable, setIsEditable] = useState(false);
@@ -49,13 +44,18 @@ const Profile = (props) => {
             <MDBCol lg="8">
               <MDBCard className="mb-4">
                 <MDBCardBody>
-                  <MDBRow>
+                  <MDBRow className="inputFields">
                     <MDBCol sm="3">
                       <MDBCardText>Full Name</MDBCardText>
                     </MDBCol>
                     <MDBCol sm="9">
                       {isEditable && (
-                        <input type="text" value="Jonathan Smith" />
+                        <MDBInput
+                          label="Name"
+                          id="typeText"
+                          type="text"
+                          value="Jonathan Smith"
+                        />
                       )}
                       {!isEditable && (
                         <MDBCardText className="text-muted">
@@ -65,13 +65,18 @@ const Profile = (props) => {
                     </MDBCol>
                   </MDBRow>
                   <hr />
-                  <MDBRow>
+                  <MDBRow className="inputFields">
                     <MDBCol sm="3">
                       <MDBCardText>Email</MDBCardText>
                     </MDBCol>
                     <MDBCol sm="9">
                       {isEditable && (
-                        <input type="text" value="example@example.com" />
+                        <MDBInput
+                          label="Email"
+                          id="typeText"
+                          type="text"
+                          value="example@example.com"
+                        />
                       )}
                       {!isEditable && (
                         <MDBCardText className="text-muted">
@@ -81,13 +86,18 @@ const Profile = (props) => {
                     </MDBCol>
                   </MDBRow>
                   <hr />
-                  <MDBRow>
+                  <MDBRow className="inputFields">
                     <MDBCol sm="3">
                       <MDBCardText>Phone</MDBCardText>
                     </MDBCol>
                     <MDBCol sm="9">
                       {isEditable && (
-                        <input type="text" value="(097) 234-5678" />
+                        <MDBInput
+                          label="Phone"
+                          id="typeText"
+                          type="text"
+                          value="(097) 234-5678"
+                        />
                       )}
                       {!isEditable && (
                         <MDBCardText className="text-muted">
@@ -97,13 +107,18 @@ const Profile = (props) => {
                     </MDBCol>
                   </MDBRow>
                   <hr />
-                  <MDBRow>
+                  <MDBRow className="inputFields">
                     <MDBCol sm="3">
                       <MDBCardText>Mobile</MDBCardText>
                     </MDBCol>
                     <MDBCol sm="9">
                       {isEditable && (
-                        <input type="text" value="(097) 234-5678" />
+                        <MDBInput
+                          label="Mobile"
+                          id="typeText"
+                          type="text"
+                          value="(098) 765-4321"
+                        />
                       )}
                       {!isEditable && (
                         <MDBCardText className="text-muted">
@@ -113,13 +128,15 @@ const Profile = (props) => {
                     </MDBCol>
                   </MDBRow>
                   <hr />
-                  <MDBRow>
+                  <MDBRow className="inputFields">
                     <MDBCol sm="3">
                       <MDBCardText>Address</MDBCardText>
                     </MDBCol>
                     <MDBCol sm="9">
                       {isEditable && (
-                        <input
+                        <MDBInput
+                          label="Address"
+                          id="typeText"
                           type="text"
                           value="Bay Area, San Francisco, CA"
                         />

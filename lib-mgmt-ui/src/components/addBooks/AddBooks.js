@@ -32,9 +32,18 @@ const AddBooks = (props) => {
             <select className="form-control">
               <option selected>Select Genre</option>
               <option>Comedy</option>
-              <option>Fiction</option>
               <option>Drama</option>
               <option>Action</option>
+              <option>Horror</option>
+              <option>Thriller</option>
+              <option>Science Fiction</option>
+              <option>Crime</option>
+              <option>Romance</option>
+              <option>Documentary</option>
+              <option>Mystery</option>
+              <option>History</option>
+              <option>Sports</option>
+              <option>Animation</option>
             </select>
           </div>
           <div className="col-md-6 mb-4">

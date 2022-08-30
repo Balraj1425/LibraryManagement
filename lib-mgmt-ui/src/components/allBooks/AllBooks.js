@@ -401,7 +401,7 @@ const AllBooks = (props) => {
           </IconButton>
         </Paper>
       </div>
-      <div>
+      <div className="allBookTable">
         <Box sx={{ width: "100%" }}>
           <Paper sx={{ width: "100%", mb: 2 }}>
             <EnhancedTableToolbar numSelected={selected.length} />
