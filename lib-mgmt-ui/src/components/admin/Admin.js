@@ -26,6 +26,7 @@ import IssueRequests from "../issueRequests/IssueRequests";
 import Profile from "../profile/Profile";
 import AllIssuedBooks from "../allIssuedBooks/AllIssuedBooks";
 import ManageStaff from "../manageStaff/ManageStaff";
+import StaffApprovalRequest from "../staffApprovalRequest/StaffApprovalRequest";
 
 const Admin = (props) => {
   const drawerWidth = 240;
@@ -153,6 +154,9 @@ const Admin = (props) => {
           {showComponent == "manageUsers" && <ManageUsers></ManageUsers>}
           {showComponent == "manageStaff" && <ManageStaff></ManageStaff>}
           {showComponent == "issueRequest" && <IssueRequests></IssueRequests>}
+          {showComponent == "staffApprovalRequest" && (
+            <StaffApprovalRequest></StaffApprovalRequest>
+          )}
           {showComponent == "allIssuedBooks" && (
             <AllIssuedBooks></AllIssuedBooks>
           )}

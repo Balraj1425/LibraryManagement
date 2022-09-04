@@ -9,58 +9,58 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 
 const columns = [
-  { id: "userName", label: "Name", minWidth: 170 },
-  { id: "phoneNo", label: "Phone-No", minWidth: 100 },
+  { id: "staffName", label: "Staff Name", minWidth: 170, align: "center" },
+  { id: "email", label: "Email", minWidth: 100, align: "center" },
   {
-    id: "email",
-    label: "Email",
+    id: "phone",
+    label: "Phone No",
     minWidth: 170,
     align: "center",
-    format: (value) => value.toLocaleString("en-US"),
+    format: (value) => value,
   },
   {
     id: "action",
     label: "Action",
     minWidth: 170,
     align: "center",
-    format: (value) => value.toFixed(2),
+    format: (value) => value,
   },
 ];
 
 const rows = [
   {
-    userName: "Vineet",
-    phoneNo: 999999999,
-    email: "VineetDixit@gmail.com",
+    staffName: "Himanshu",
+    email: "Himanshu@gmail.com",
+    phone: 8902030293,
   },
   {
-    userName: "Shubham",
-    phoneNo: 999999999,
-    email: "Vinee@gmail.com",
+    staffName: "Himanshu",
+    email: "Himanshu@gmail.com",
+    phone: 8902030293,
   },
   {
-    userName: "Vikrant",
-    phoneNo: 999999999,
-    email: "Vineett@gmail.com",
+    staffName: "Himanshu",
+    email: "Himanshu@gmail.com",
+    phone: 8902030293,
   },
   {
-    userName: "Balraj",
-    phoneNo: 999999999,
-    email: "etDixit@gmail.com",
+    staffName: "Himanshu",
+    email: "Himanshu@gmail.com",
+    phone: 8902030293,
   },
   {
-    userName: "Dixit",
-    phoneNo: 999999999,
-    email: "Vineil.com",
+    staffName: "Himanshu",
+    email: "Himanshu@gmail.com",
+    phone: 8902030293,
   },
   {
-    userName: "Vivek",
-    phoneNo: 999999999,
-    email: "VineetDl.com",
+    staffName: "Himanshu",
+    email: "Himanshu@gmail.com",
+    phone: 8902030293,
   },
 ];
 
-const ManageStaff = (props) => {
+const StaffApprovalRequest = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -73,15 +73,18 @@ const ManageStaff = (props) => {
     setPage(0);
   };
 
-  const handelEdit = (e) => {
+  const handelApprove = (e) => {
+    console.log("Approve");
     console.log(e);
   };
-  const handelRemove = (e) => {
+  const handelDecline = (e) => {
+    console.log("Decline");
     console.log(e);
   };
+
   return (
     <>
-      <h1>Manage Staff component</h1>
+      <h1>Issue Request</h1>
       <div>
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
@@ -104,12 +107,7 @@ const ManageStaff = (props) => {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
                     return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.code}
-                      >
+                      <TableRow hover tabIndex={-1} key={row.code}>
                         {columns.map((column) => {
                           const value = row[column.id];
                           {
@@ -122,15 +120,15 @@ const ManageStaff = (props) => {
                                   >
                                     <button
                                       className="btn btn-success"
-                                      onClick={() => handelEdit(row)}
+                                      onClick={() => handelApprove(row)}
                                     >
-                                      Edit
+                                      Approve
                                     </button>
                                     <button
                                       className="btn btn-danger"
-                                      onClick={() => handelRemove(row)}
+                                      onClick={() => handelDecline(row)}
                                     >
-                                      Remove
+                                      Decline
                                     </button>
                                   </TableCell>
                                 </>
@@ -167,4 +165,4 @@ const ManageStaff = (props) => {
   );
 };
 
-export default ManageStaff;
+export default StaffApprovalRequest;

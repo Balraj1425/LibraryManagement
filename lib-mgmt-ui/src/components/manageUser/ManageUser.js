@@ -10,33 +10,33 @@ import TableRow from "@mui/material/TableRow";
 
 const columns = [
   { id: "userName", label: "Name", minWidth: 170 },
-  { id: "phoneNo", label: "Phone-No", minWidth: 100 },
+  { id: "phoneNo", label: "Phone-No", minWidth: 100, format: (value) => value },
   {
     id: "email",
     label: "Email",
     minWidth: 170,
-    align: "right",
+    align: "center",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "totalIssuedBook",
     label: "Total Issued Book",
     minWidth: 170,
-    align: "right",
+    align: "center",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "userFine",
     label: "Fine",
     minWidth: 170,
-    align: "right",
+    align: "center",
     format: (value) => value.toFixed(2),
   },
   {
     id: "action",
     label: "Action",
     minWidth: 170,
-    align: "right",
+    align: "center",
     format: (value) => value.toFixed(2),
   },
 ];
@@ -98,6 +98,13 @@ const ManageUsers = (props) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  const handelEdit = (e) => {
+    console.log(e);
+  };
+  const handelRemove = (e) => {
+    console.log(e);
+  };
   return (
     <>
       <h1>Manage Users component</h1>
@@ -131,13 +138,39 @@ const ManageUsers = (props) => {
                       >
                         {columns.map((column) => {
                           const value = row[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.format && typeof value === "number"
-                                ? column.format(value)
-                                : value}
-                            </TableCell>
-                          );
+                          {
+                            if (column.id === "action") {
+                              return (
+                                <>
+                                  <TableCell
+                                    key={column.id}
+                                    align={column.align}
+                                  >
+                                    <button
+                                      className="btn btn-success"
+                                      onClick={() => handelEdit(row)}
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      className="btn btn-danger"
+                                      onClick={() => handelRemove(row)}
+                                    >
+                                      Remove
+                                    </button>
+                                  </TableCell>
+                                </>
+                              );
+                            } else {
+                              return (
+                                <TableCell key={column.id} align={column.align}>
+                                  {column.format && typeof value === "number"
+                                    ? column.format(value)
+                                    : value}
+                                </TableCell>
+                              );
+                            }
+                          }
                         })}
                       </TableRow>
                     );
