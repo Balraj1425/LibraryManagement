@@ -19,20 +19,6 @@ const columns = [
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "totalIssuedBook",
-    label: "Total Issued Book",
-    minWidth: 170,
-    align: "right",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "userFine",
-    label: "Fine",
-    minWidth: 170,
-    align: "right",
-    format: (value) => value.toFixed(2),
-  },
-  {
     id: "action",
     label: "Action",
     minWidth: 170,
@@ -46,47 +32,35 @@ const rows = [
     userName: "Vineet",
     phoneNo: 999999999,
     email: "VineetDixit@gmail.com",
-    totalIssuedBook: 3,
-    userFine: 50,
   },
   {
     userName: "Shubham",
     phoneNo: 999999999,
     email: "Vinee@gmail.com",
-    totalIssuedBook: 3,
-    userFine: 50,
   },
   {
     userName: "Vikrant",
     phoneNo: 999999999,
     email: "Vineett@gmail.com",
-    totalIssuedBook: 3,
-    userFine: 50,
   },
   {
     userName: "Balraj",
     phoneNo: 999999999,
     email: "etDixit@gmail.com",
-    totalIssuedBook: 3,
-    userFine: 50,
   },
   {
     userName: "Dixit",
     phoneNo: 999999999,
     email: "Vineil.com",
-    totalIssuedBook: 3,
-    userFine: 50,
   },
   {
     userName: "Vivek",
     phoneNo: 999999999,
     email: "VineetDl.com",
-    totalIssuedBook: 3,
-    userFine: 50,
   },
 ];
 
-const ManageUsers = (props) => {
+const ManageStaff = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -100,7 +74,7 @@ const ManageUsers = (props) => {
   };
   return (
     <>
-      <h1>Manage Users component</h1>
+      <h1>Manage Staff component</h1>
       <div>
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
@@ -160,4 +134,4 @@ const ManageUsers = (props) => {
   );
 };
 
-export default ManageUsers;
+export default ManageStaff;

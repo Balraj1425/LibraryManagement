@@ -25,14 +25,15 @@ import ManageUsers from "../manageUser/ManageUser";
 import IssueRequests from "../issueRequests/IssueRequests";
 import Profile from "../profile/Profile";
 import AllIssuedBooks from "../allIssuedBooks/AllIssuedBooks";
+import ManageStaff from "../manageStaff/ManageStaff";
 
 const Admin = (props) => {
   const drawerWidth = 240;
-  const [showComponent, setShowComponent] = useState("allBooks")
+  const [showComponent, setShowComponent] = useState("allBooks");
 
   const showComponentHandler = (elm) => {
-    setShowComponent(elm)
-  }
+    setShowComponent(elm);
+  };
 
   return (
     <>
@@ -67,7 +68,7 @@ const Admin = (props) => {
           <Divider />
           <List>
             <ListItem disablePadding>
-              <ListItemButton onClick={()=>showComponentHandler('allBooks')}>
+              <ListItemButton onClick={() => showComponentHandler("allBooks")}>
                 <ListItemIcon>
                   <LibraryBooksIcon />
                 </ListItemIcon>
@@ -75,7 +76,7 @@ const Admin = (props) => {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton onClick={()=>showComponentHandler('addBooks')}>
+              <ListItemButton onClick={() => showComponentHandler("addBooks")}>
                 <ListItemIcon>
                   <LibraryAddIcon />
                 </ListItemIcon>
@@ -83,7 +84,9 @@ const Admin = (props) => {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton onClick={()=>showComponentHandler('manageUsers')}>
+              <ListItemButton
+                onClick={() => showComponentHandler("manageUsers")}
+              >
                 <ListItemIcon>
                   <ManageAccountsIcon />
                 </ListItemIcon>
@@ -91,7 +94,19 @@ const Admin = (props) => {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton onClick={()=>showComponentHandler('issueRequest')}>
+              <ListItemButton
+                onClick={() => showComponentHandler("manageStaff")}
+              >
+                <ListItemIcon>
+                  <ManageAccountsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Manage Staff" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => showComponentHandler("issueRequest")}
+              >
                 <ListItemIcon>
                   <HowToRegIcon />
                 </ListItemIcon>
@@ -99,7 +114,19 @@ const Admin = (props) => {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton onClick={()=>showComponentHandler('allIssuedBooks')}>
+              <ListItemButton
+                onClick={() => showComponentHandler("staffApprovalRequest")}
+              >
+                <ListItemIcon>
+                  <HowToRegIcon />
+                </ListItemIcon>
+                <ListItemText primary="Staff Approval Request" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => showComponentHandler("allIssuedBooks")}
+              >
                 <ListItemIcon>
                   <GroupsIcon />
                 </ListItemIcon>
@@ -107,7 +134,7 @@ const Admin = (props) => {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton onClick={()=>showComponentHandler('myProfile')}>
+              <ListItemButton onClick={() => showComponentHandler("myProfile")}>
                 <ListItemIcon>
                   <PersonIcon />
                 </ListItemIcon>
@@ -121,12 +148,15 @@ const Admin = (props) => {
           sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
         >
           <Toolbar />
-          {showComponent == 'allBooks' && <AllBooks></AllBooks>}
-          {showComponent == 'addBooks' && <AddBooks></AddBooks>}
-          {showComponent == 'manageUsers' && <ManageUsers></ManageUsers>}
-          {showComponent == 'issueRequest' && <IssueRequests></IssueRequests>}
-          {showComponent == 'allIssuedBooks' && <AllIssuedBooks></AllIssuedBooks>}
-          {showComponent == 'myProfile' && <Profile></Profile>}
+          {showComponent == "allBooks" && <AllBooks></AllBooks>}
+          {showComponent == "addBooks" && <AddBooks></AddBooks>}
+          {showComponent == "manageUsers" && <ManageUsers></ManageUsers>}
+          {showComponent == "manageStaff" && <ManageStaff></ManageStaff>}
+          {showComponent == "issueRequest" && <IssueRequests></IssueRequests>}
+          {showComponent == "allIssuedBooks" && (
+            <AllIssuedBooks></AllIssuedBooks>
+          )}
+          {showComponent == "myProfile" && <Profile></Profile>}
           {/* <Typography paragraph>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
