@@ -10,8 +10,8 @@ import User from "./components/user/User";
 
 function App() {
   return (
-    <User></User>
-    // <Admin></Admin>
+    // <User></User>
+    <Admin></Admin>
     // <Router>
     //   <div className="App">
     //     <Navbar/>
