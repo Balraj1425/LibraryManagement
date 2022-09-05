@@ -32,6 +32,9 @@ import ManageStaff from "../manageStaff/ManageStaff";
 import StaffApprovalRequest from "../staffApprovalRequest/StaffApprovalRequest";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
+import AddTaskIcon from "@mui/icons-material/AddTask";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const drawerWidth = 240;
 
@@ -100,7 +103,6 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-
 const Admin = (props) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -155,6 +157,14 @@ const Admin = (props) => {
           <Divider />
           <List>
             <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText primary="Dashboard" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
               <ListItemButton onClick={() => showComponentHandler("allBooks")}>
                 <ListItemIcon>
                   <LibraryBooksIcon />
@@ -185,7 +195,7 @@ const Admin = (props) => {
                 onClick={() => showComponentHandler("manageStaff")}
               >
                 <ListItemIcon>
-                  <ManageAccountsIcon />
+                  <SupervisedUserCircleIcon />
                 </ListItemIcon>
                 <ListItemText primary="Manage Staff" />
               </ListItemButton>
@@ -205,7 +215,7 @@ const Admin = (props) => {
                 onClick={() => showComponentHandler("staffApprovalRequest")}
               >
                 <ListItemIcon>
-                  <HowToRegIcon />
+                  <AddTaskIcon />
                 </ListItemIcon>
                 <ListItemText primary="Staff Approval Request" />
               </ListItemButton>
