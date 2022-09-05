@@ -6,10 +6,12 @@ import Register from "./components/Register";
 import ARegister from "./components/admin/staffLogin/ARegister";
 import Navbar from "./components/navbar/Navbar";
 import Admin from "./components/admin/Admin";
+import User from "./components/user/User";
 
 function App() {
   return (
-    <Admin></Admin>
+    <User></User>
+    // <Admin></Admin>
     // <Router>
     //   <div className="App">
     //     <Navbar/>
