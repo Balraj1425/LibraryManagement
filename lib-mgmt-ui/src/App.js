@@ -11,23 +11,23 @@ import User from "./components/user/User";
 function App() {
   return (
     // <User></User>
-    <Admin></Admin>
-    // <Router>
-    //   <div className="App">
-    //     <Navbar/>
+    // <Admin></Admin>
+    <Router>
+      <div className="App">
+        <Navbar/>
 
-    //     <div className="auth-wrapper">
-    //       <div className="auth-inner">
-    //         <Routes>
-    //           <Route exact path="/" element={<Login />} />
-    //           <Route path="/sign-in" element={<Login />} />
-    //           <Route path="/sign-up" element={<Register />} />
-    //           <Route path="/staff-sign-up" element={<ARegister />} />
-    //         </Routes>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </Router>
+        <div className="auth-wrapper">
+          <div className="auth-inner">
+            <Routes>
+              <Route exact path="/" element={<Login />} />
+              <Route path="/sign-in" element={<Login />} />
+              <Route path="/sign-up" element={<Register />} />
+              <Route path="/staff-sign-up" element={<ARegister />} />
+            </Routes>
+          </div>
+        </div>
+      </div>
+    </Router>
   );
 }
 
