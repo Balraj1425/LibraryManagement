@@ -32,6 +32,9 @@ import ManageStaff from "../manageStaff/ManageStaff";
 import StaffApprovalRequest from "../staffApprovalRequest/StaffApprovalRequest";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
+import AddTaskIcon from "@mui/icons-material/AddTask";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const drawerWidth = 240;
 
@@ -100,12 +103,13 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-
 const Admin = (props) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   // const drawerWidth = 240;
   const [showComponent, setShowComponent] = useState("allBooks");
+
+  const [userType, setUserType] = useState("admin");
 
   const showComponentHandler = (elm) => {
     setShowComponent(elm);
@@ -138,7 +142,7 @@ const Admin = (props) => {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" noWrap component="div">
-              Admin Dashboard
+              {userType == "admin" ? "Admin" : "Staff"} Dashboard
             </Typography>
           </Toolbar>
         </AppBar>
@@ -154,6 +158,14 @@ const Admin = (props) => {
           </DrawerHeader>
           <Divider />
           <List>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText primary="Dashboard" />
+              </ListItemButton>
+            </ListItem>
             <ListItem disablePadding>
               <ListItemButton onClick={() => showComponentHandler("allBooks")}>
                 <ListItemIcon>
@@ -180,16 +192,18 @@ const Admin = (props) => {
                 <ListItemText primary="Manage Users" />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={() => showComponentHandler("manageStaff")}
-              >
-                <ListItemIcon>
-                  <ManageAccountsIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Staff" />
-              </ListItemButton>
-            </ListItem>
+            {userType == "admin" && (
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => showComponentHandler("manageStaff")}
+                >
+                  <ListItemIcon>
+                    <SupervisedUserCircleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Staff" />
+                </ListItemButton>
+              </ListItem>
+            )}
             <ListItem disablePadding>
               <ListItemButton
                 onClick={() => showComponentHandler("issueRequest")}
@@ -200,16 +214,18 @@ const Admin = (props) => {
                 <ListItemText primary="Issue Request" />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={() => showComponentHandler("staffApprovalRequest")}
-              >
-                <ListItemIcon>
-                  <HowToRegIcon />
-                </ListItemIcon>
-                <ListItemText primary="Staff Approval Request" />
-              </ListItemButton>
-            </ListItem>
+            {userType == "admin" && (
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => showComponentHandler("staffApprovalRequest")}
+                >
+                  <ListItemIcon>
+                    <AddTaskIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Staff Approval Request" />
+                </ListItemButton>
+              </ListItem>
+            )}
             <ListItem disablePadding>
               <ListItemButton
                 onClick={() => showComponentHandler("allIssuedBooks")}
