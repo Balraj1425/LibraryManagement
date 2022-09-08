@@ -90,7 +90,19 @@ app.post("/login", (req, res) => {
             .digest("hex");
 
           if (req.body.password === result.password) {
-            res.send(result);
+            //create jwt token
+            let data = {
+                email: req.body.email,
+                userType: req.body.userType,
+                time: Date()
+            }
+            const jwtToken = jwt.sign(data,jwtSecretKey);
+            let resultpayload = {
+                result: result,
+                token: jwtToken
+            }
+            console.log(resultpayload)
+            res.send(resultpayload);
           }
         }
       });

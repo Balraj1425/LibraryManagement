@@ -24,17 +24,20 @@ const Login = () => {
       password: password,
     };
     axios.post("http://localhost:3004/login", data).then((res) => {
-      console.log(res);
+      console.log({res});
+      sessionStorage.setItem("jwtToken", res.data.token);
       if (res.data.userType === "user") {
         navigate("/userDashboard");
       } else {
-        console.log("dddd", res.userType);
+        navigate("/adminDashboard");
       }
     });
   };
 
   return (
     <>
+    <div className="auth-inner">
+
       <form>
         <h3>Sign In</h3>
         <div className="mb-3">
@@ -80,6 +83,7 @@ const Login = () => {
           Forgot <a href="#">password?</a>
         </p>
       </form>
+    </div>
     </>
   );
 };
