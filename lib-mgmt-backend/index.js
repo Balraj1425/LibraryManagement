@@ -81,9 +81,20 @@ app.post("/login", (req, res) => {
     if (!email || !password) {
       console.log("Please fill all the details");
       res.send({ message: "Please fill all the details" });
+    } else {
+      USERDETAILS.findOne({ email: email }, (err, result) => {
+        if (result) {
+          req.body.password = crypto
+            .createHash("sha256", hashKey)
+            .update(req.body.password)
+            .digest("hex");
+
+          if (req.body.password === result.password) {
+            res.send(result);
+          }
+        }
+      });
     }
-    console.log(email);
-    res.send(password);
   } catch (error) {}
 });
 

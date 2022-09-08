@@ -14,12 +14,13 @@ function App() {
     // <Admin></Admin>
     <Router>
       <div className="App">
-        <Navbar/>
+        <Navbar />
 
         <div className="auth-wrapper">
           <div className="auth-inner">
             <Routes>
               <Route exact path="/" element={<Login />} />
+              <Route exact path="/userDashboard" element={<User />} />
               <Route path="/sign-in" element={<Login />} />
               <Route path="/sign-up" element={<Register />} />
               <Route path="/staff-sign-up" element={<ARegister />} />

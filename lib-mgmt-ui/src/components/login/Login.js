@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import "../login/Login.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
+  const navigate = useNavigate();
+
   const handleEmail = (e) => {
-    console.log("email handler")
+    console.log("email handler");
     setEmail(e.target.value);
   };
   const handlePassword = (e) => {
@@ -20,9 +23,13 @@ const Login = () => {
       email: email,
       password: password,
     };
-    console.log(data)
     axios.post("http://localhost:3004/login", data).then((res) => {
       console.log(res);
+      if (res.data.userType === "user") {
+        navigate("/userDashboard");
+      } else {
+        console.log("dddd", res.userType);
+      }
     });
   };
 
