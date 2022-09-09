@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../addBooks/AddBooks.css";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
@@ -17,6 +17,8 @@ const AddBooks = (props) => {
   const imgFile = useRef();
   const searchKeyInputRef = useRef();
   const [file, setFile] = useState();
+
+  const albooksData = [];
 
   const imgHandler = (e) => {
     const file = e.target.files[0];
@@ -68,6 +70,8 @@ const AddBooks = (props) => {
       setOpen(true);
     });
   };
+
+
 
   return (
     <>

@@ -214,6 +214,7 @@ app.post("/addBook", upload.single("file"), (req, res) => {
   if (verified) {
     const values = new BOOKREPO(req.body);
     values.bookImage = req.file.filename;
+    values.availableCopies = values.noOfCopies;
     values.save((err) => {
       if (err) {
         res.send(err);
@@ -224,6 +225,17 @@ app.post("/addBook", upload.single("file"), (req, res) => {
   } else {
     res.status(404).send("Invalid User request");
   }
+});
+
+// routes to fetch allbooks Data
+app.get("/getallbooks", (req, res) => {
+  BOOKREPO.find({}, (err, result) => {
+    if (result) {
+      res.send(result);
+    } else {
+      res.send("Error in fetching books");
+    }
+  });
 });
 
 app.listen(port, () => {
