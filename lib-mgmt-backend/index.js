@@ -4,6 +4,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const path = require("path");
 
 const port = "3004";
 
@@ -31,8 +33,8 @@ mongoose
 const connection = mongoose.connection;
 
 //Creating a Schema for database
-//User Registration Details
 
+//User Registration Details
 const UserDetails = new mongoose.Schema({
   username: {
     type: String,
@@ -67,8 +69,49 @@ const UserDetails = new mongoose.Schema({
   },
 });
 
+//Book Repo schema
+const BookRepo = new mongoose.Schema({
+  bookName: {
+    type: String,
+    require: true,
+  },
+  author: {
+    type: String,
+    require: true,
+  },
+  status: {
+    type: Boolean,
+    require: true,
+  },
+  searchKey: {
+    type: String,
+    require: true,
+  },
+  bookType: {
+    type: String,
+    require: true,
+  },
+  publisher: {
+    type: String,
+    require: true,
+  },
+  bookImage: {
+    type: String,
+    require: true,
+  },
+  noOfCopies: {
+    type: Number,
+    require: true,
+  },
+  availableCopies: {
+    type: Number,
+    require: true,
+  },
+});
+
 //Creating a Model of a schema into a Database
 const USERDETAILS = connection.model("usersdetail", UserDetails);
+const BOOKREPO = connection.model("bookrepo", BookRepo);
 
 app.get("/hello", (req, res) => {
   res.send("hello");
@@ -92,16 +135,16 @@ app.post("/login", (req, res) => {
           if (req.body.password === result.password) {
             //create jwt token
             let data = {
-                email: req.body.email,
-                userType: req.body.userType,
-                time: Date()
-            }
-            const jwtToken = jwt.sign(data,jwtSecretKey);
+              email: req.body.email,
+              userType: req.body.userType,
+              time: Date(),
+            };
+            const jwtToken = jwt.sign(data, jwtSecretKey);
             let resultpayload = {
-                result: result,
-                token: jwtToken
-            }
-            console.log(resultpayload)
+              result: result,
+              token: jwtToken,
+            };
+            console.log(resultpayload);
             res.send(resultpayload);
           }
         }
@@ -144,6 +187,43 @@ app.post("/register", (req, res) => {
       }
     });
   } catch (error) {}
+});
+
+//route to add books
+//multer config
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "BookImages");
+  },
+  filename: (req, file, cb) => {
+    console.log(file);
+    cb(
+      null,
+      Date.now() +
+        path.parse(file.originalname).name +
+        path.extname(file.originalname)
+    );
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post("/addBook", upload.single("file"), (req, res) => {
+  const token = req.header("jwt-token");
+  const verified = jwt.verify(token, jwtSecretKey);
+  if (verified) {
+    const values = new BOOKREPO(req.body);
+    values.bookImage = req.file.filename;
+    values.save((err) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send("book added successfully");
+      }
+    });
+  } else {
+    res.status(404).send("Invalid User request");
+  }
 });
 
 app.listen(port, () => {
