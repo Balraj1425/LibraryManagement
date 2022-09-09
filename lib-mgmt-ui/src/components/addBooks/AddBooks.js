@@ -1,6 +1,12 @@
 import React, { useRef, useState } from "react";
 import "../addBooks/AddBooks.css";
 import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const AddBooks = (props) => {
   const bookNameInputRef = useRef();
@@ -17,10 +23,24 @@ const AddBooks = (props) => {
     setFile(file);
   };
 
-  const config = {
-    headers:{
-      "jwt-token": sessionStorage.getItem("jwtToken")
+  const [open, setOpen] = React.useState(false);
+
+  // const handleClick = () => {
+  //   setOpen(true);
+  // };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
     }
+
+    setOpen(false);
+  };
+
+  const config = {
+    headers: {
+      "jwt-token": sessionStorage.getItem("jwtToken"),
+    },
   };
 
   const addBookHandler = (e) => {
@@ -35,17 +55,17 @@ const AddBooks = (props) => {
     data.append("genrsearchKey", searchKeyInputRef.current.value);
     data.append("file", file);
 
-    // let payload = {
-    //   bookName: bookNameInputRef.current.value,
-    //   author: authorInputRef.current.value,
-    //   publisher: publisherInputRef.current.value,
-    //   genre: genreInputRef.current.value,
-    //   noOfCopies: noOfCopiesInputRef.current.value,
-    //   searchKey: searchKeyInputRef.current.value,
-    // };
     console.log(data);
     axios.post("http://localhost:3004/addBook", data, config).then((res) => {
       console.log(res);
+      bookNameInputRef.current.value = "";
+      authorInputRef.current.value = "";
+      publisherInputRef.current.value = "";
+      genreInputRef.current.value = "";
+      noOfCopiesInputRef.current.value = "";
+      searchKeyInputRef.current.value = "";
+      setFile("");
+      setOpen(true);
     });
   };
 
@@ -135,6 +155,15 @@ const AddBooks = (props) => {
             Add
           </button>
         </div>
+        <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Book Added Successfully
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );
