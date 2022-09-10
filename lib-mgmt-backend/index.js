@@ -238,6 +238,18 @@ app.get("/getallbooks", (req, res) => {
   });
 });
 
+//route to fetch all userdetails 
+//need to fetch IssuedBooks data also
+app.get("/getAllUsers", (req, res)=>{
+  USERDETAILS.find({userType:"user"}, (err, result)=>{
+    if (result) {
+      res.send(result);
+    } else {
+      res.send("Error in fetching user details");
+    }
+  })
+})
+
 app.listen(port, () => {
   console.log("server started at port: ", port);
 });

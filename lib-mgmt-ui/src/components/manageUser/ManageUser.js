@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,9 +7,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import axios from "axios";
 
 const columns = [
-  { id: "userName", label: "Name", minWidth: 170 },
+  { id: "username", label: "Name", minWidth: 170 },
   { id: "phoneNo", label: "Phone-No", minWidth: 100, format: (value) => value },
   {
     id: "email",
@@ -41,54 +42,55 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    userName: "Vineet",
-    phoneNo: 999999999,
-    email: "VineetDixit@gmail.com",
-    totalIssuedBook: 3,
-    userFine: 50,
-  },
-  {
-    userName: "Shubham",
-    phoneNo: 999999999,
-    email: "Vinee@gmail.com",
-    totalIssuedBook: 3,
-    userFine: 50,
-  },
-  {
-    userName: "Vikrant",
-    phoneNo: 999999999,
-    email: "Vineett@gmail.com",
-    totalIssuedBook: 3,
-    userFine: 50,
-  },
-  {
-    userName: "Balraj",
-    phoneNo: 999999999,
-    email: "etDixit@gmail.com",
-    totalIssuedBook: 3,
-    userFine: 50,
-  },
-  {
-    userName: "Dixit",
-    phoneNo: 999999999,
-    email: "Vineil.com",
-    totalIssuedBook: 3,
-    userFine: 50,
-  },
-  {
-    userName: "Vivek",
-    phoneNo: 999999999,
-    email: "VineetDl.com",
-    totalIssuedBook: 3,
-    userFine: 50,
-  },
-];
+// const rows = [
+//   {
+//     userName: "Vineet",
+//     phoneNo: 999999999,
+//     email: "VineetDixit@gmail.com",
+//     totalIssuedBook: 3,
+//     userFine: 50,
+//   },
+//   {
+//     userName: "Shubham",
+//     phoneNo: 999999999,
+//     email: "Vinee@gmail.com",
+//     totalIssuedBook: 3,
+//     userFine: 50,
+//   },
+//   {
+//     userName: "Vikrant",
+//     phoneNo: 999999999,
+//     email: "Vineett@gmail.com",
+//     totalIssuedBook: 3,
+//     userFine: 50,
+//   },
+//   {
+//     userName: "Balraj",
+//     phoneNo: 999999999,
+//     email: "etDixit@gmail.com",
+//     totalIssuedBook: 3,
+//     userFine: 50,
+//   },
+//   {
+//     userName: "Dixit",
+//     phoneNo: 999999999,
+//     email: "Vineil.com",
+//     totalIssuedBook: 3,
+//     userFine: 50,
+//   },
+//   {
+//     userName: "Vivek",
+//     phoneNo: 999999999,
+//     email: "VineetDl.com",
+//     totalIssuedBook: 3,
+//     userFine: 50,
+//   },
+// ];
 
 const ManageUsers = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rows, setRows] = useState();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -105,6 +107,19 @@ const ManageUsers = (props) => {
   const handelRemove = (e) => {
     console.log(e);
   };
+
+  //fetch all userdetails++ need to add query for issued books also
+  useEffect(() => {
+    axios.get("http://localhost:3004/getAllUsers")
+      .then((res) => {
+        console.log("res", res);
+        setRows(res.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, []);
+
   return (
     <>
       <h1>Manage Users component</h1>
@@ -126,7 +141,7 @@ const ManageUsers = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
+                {rows && rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
                     return (
@@ -178,7 +193,7 @@ const ManageUsers = (props) => {
               </TableBody>
             </Table>
           </TableContainer>
-          <TablePagination
+          {rows && (<TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
             count={rows.length}
@@ -186,7 +201,7 @@ const ManageUsers = (props) => {
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          />)}
         </Paper>
       </div>
     </>
