@@ -54,7 +54,7 @@ const AddBooks = (props) => {
     data.append("publisher", publisherInputRef.current.value);
     data.append("genre", genreInputRef.current.value);
     data.append("noOfCopies", noOfCopiesInputRef.current.value);
-    data.append("genrsearchKey", searchKeyInputRef.current.value);
+    data.append("searchKey", searchKeyInputRef.current.value);
     data.append("file", file);
 
     console.log(data);

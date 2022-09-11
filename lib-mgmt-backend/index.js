@@ -297,6 +297,40 @@ app.get("/getAllStaffs", (req, res) => {
   });
 });
 
+//Routes To search Books
+
+app.post("/getSearchBook", (req, res) => {
+  console.log(req.body.searchKey);
+  // BOOKREPO.find({
+  //   $or: [
+  //     { searchKey: "harry"  },
+  //     { bookName: { $regex: req.body.searchKey } },
+  //   ],
+  // })
+  let payload = {};
+  if (req.body.searchKey.trim() != "") {
+    payload = {
+      $or: [
+        { searchKey: { $regex: "harry" } },
+        { bookName: { $regex: "harry" } },
+      ],
+    };
+  }
+
+  BOOKREPO.find(
+    payload,
+
+    (err, result) => {
+      if (result) {
+        console.log("rr", result);
+        res.send(result);
+      } else {
+        res.send("No Data");
+      }
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log("server started at port: ", port);
 });

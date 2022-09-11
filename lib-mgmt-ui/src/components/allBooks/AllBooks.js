@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -132,7 +132,26 @@ export default function AllBooks() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState();
-  console.log(ctx.loggedInUserData.userType)
+
+  console.log(ctx.loggedInUserData.userType);
+
+  // const searchInputRef = useRef();
+  const [searchKey, setSearchKey] = useState();
+
+  const handelSearch = (e) => {
+    e.preventDefault();
+    console.log("hh", searchKey);
+
+    axios
+      .post("http://localhost:3004/getSearchBook", { searchKey: searchKey })
+      .then((res) => {
+        setRows(res.data);
+        console.log("SEARCHbOOK", res);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -149,6 +168,10 @@ export default function AllBooks() {
 
   const handelDecline = (e) => {
     console.log(e);
+  };
+
+  const handleSearch = (e) => {
+    setSearchKey(e.target.value);
   };
 
   useEffect(() => {
@@ -179,8 +202,15 @@ export default function AllBooks() {
             sx={{ ml: 1, flex: 1 }}
             placeholder="Search All Books"
             inputProps={{ "aria-label": "Search All Books" }}
+            // ref={searchInputRef}
+            onChange={handleSearch}
           />
-          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+          <IconButton
+            type="button"
+            sx={{ p: "10px" }}
+            aria-label="search"
+            onClick={handelSearch}
+          >
             <SearchIcon />
           </IconButton>
         </Paper>
