@@ -40,7 +40,7 @@ const Login = (props) => {
   };
 
   return (
-    <>
+    <div className="auth-wrapper">
       <div className="auth-inner">
         <form>
           <h3>Sign In</h3>
@@ -62,7 +62,7 @@ const Login = (props) => {
               onChange={handlePassword}
             />
           </div>
-          <div className="mb-3">
+          {/* <div className="mb-3">
             <div className="custom-control custom-checkbox">
               <input
                 type="checkbox"
@@ -73,7 +73,7 @@ const Login = (props) => {
                 Remember me
               </label>
             </div>
-          </div>
+          </div> */}
           <div className="d-grid">
             <button
               type="submit"
@@ -83,12 +83,13 @@ const Login = (props) => {
               Submit
             </button>
           </div>
-          <p className="forgot-password text-right">
+          {/* <p className="forgot-password text-right">
             Forgot <a href="#">password?</a>
-          </p>
+          </p> */}
         </form>
       </div>
-    </>
+   
+    </div>
   );
 };
 export default Login;

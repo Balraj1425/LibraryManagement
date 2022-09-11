@@ -20,7 +20,7 @@ const jwtSecretKey = "thisIsMyJwtSecretKey";
 //creating connection with database
 mongoose
   .connect(
-    "mongodb+srv://admin:admin@cluster0.3r0nanf.mongodb.net/?retryWrites=true&w=majority"
+    "mongodb+srv://admin:99wxPFtXiMqJKvvy@cluster0.3r0nanf.mongodb.net/?retryWrites=true&w=majority"
   )
   .then(() => {
     console.log("DataBase connected");
@@ -229,7 +229,7 @@ app.post("/registerStaff", (req, res) => {
 //multer config
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "BookImages");
+    cb(null, "../lib-mgmt-ui/public/images");
   },
   filename: (req, file, cb) => {
     console.log(file);
@@ -311,15 +311,14 @@ app.post("/getSearchBook", (req, res) => {
   if (req.body.searchKey.trim() != "") {
     payload = {
       $or: [
-        { searchKey: { $regex: "harry" } },
-        { bookName: { $regex: "harry" } },
+        { searchKey: { $regex: req.body.searchKey } },
+        { bookName: { $regex: req.body.searchKey } },
       ],
     };
   }
 
   BOOKREPO.find(
     payload,
-
     (err, result) => {
       if (result) {
         console.log("rr", result);

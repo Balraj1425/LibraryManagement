@@ -108,20 +108,20 @@ const AddBooks = (props) => {
           <div className="col-md-6 mb-4">
             <label>Genre</label>
             <select className="form-control" ref={genreInputRef}>
-              <option selected>Select Genre</option>
-              <option>Comedy</option>
-              <option>Drama</option>
-              <option>Action</option>
-              <option>Horror</option>
-              <option>Thriller</option>
-              <option>Science Fiction</option>
-              <option>Crime</option>
-              <option>Romance</option>
-              <option>Documentary</option>
-              <option>Mystery</option>
-              <option>History</option>
-              <option>Sports</option>
-              <option>Animation</option>
+              <option value="">Select Genre</option>
+              <option value="Comedy">Comedy</option>
+              <option value="Drama">Drama</option>
+              <option value="Action">Action</option>
+              <option value="Horror">Horror</option>
+              <option value="Thriller">Thriller</option>
+              <option value="Science Fiction">Science Fiction</option>
+              <option value="Crime">Crime</option>
+              <option value="Romance">Romance</option>
+              <option value="Documentary">Documentary</option>
+              <option value="Mystery">Mystery</option>
+              <option value="History">History</option>
+              <option value="Sports">Sports</option>
+              <option value="Animation">Animation</option>
             </select>
           </div>
           <div className="col-md-6 mb-4">

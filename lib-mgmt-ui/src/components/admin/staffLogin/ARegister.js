@@ -30,7 +30,7 @@ const ARegister = () => {
   };
 
   return (
-    <>
+    <div className="auth-wrapper">
       <div className="auth-inner">
         <form>
           <h3>Sign Up</h3>
@@ -106,7 +106,7 @@ const ARegister = () => {
           </p>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 

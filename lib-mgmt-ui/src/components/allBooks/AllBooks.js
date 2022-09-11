@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -13,6 +13,19 @@ import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import "../allBooks/AllBooks.css";
 import AuthContext from "../../Context/auth-context";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import {
+  MDBCol,
+  MDBContainer,
+  MDBRow,
+  MDBCard,
+  MDBCardTitle,
+  MDBCardText,
+  MDBCardBody,
+  MDBCardImage,
+  MDBBtn,
+} from "mdb-react-ui-kit";
 
 const columns = [
   { id: "bookName", label: "Book Name", minWidth: 170 },
@@ -132,11 +145,13 @@ export default function AllBooks() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState();
+  const [show, setShow] = useState(false);
+  const [detailData, setDetailData] = useState();
 
-  console.log(ctx.loggedInUserData.userType);
+  // console.log(ctx.loggedInUserData.userType);
 
   // const searchInputRef = useRef();
-  const [searchKey, setSearchKey] = useState();
+  const [searchKey, setSearchKey] = useState("");
 
   const handelSearch = (e) => {
     e.preventDefault();
@@ -170,6 +185,24 @@ export default function AllBooks() {
     console.log(e);
   };
 
+  const handelIssueBooks = (data) => {
+    data.bookImage = "images/" + data.bookImage;
+    let date = new Date();
+    let month = parseInt(date.getMonth())+1
+    let strDate = date.getDate()+'-'+month+'-'+date.getFullYear();
+    data.issueDate = strDate;
+    const returndate = new Date();
+
+    returndate.setDate(returndate.getDate() + 7);
+    let returnmonth = parseInt(returndate.getMonth())+1
+    data.returnDate = returndate.getDate()+'-'+returnmonth+'-'+returndate.getFullYear();
+    console.log({ data });
+    setDetailData(data);
+    setShow(true);
+  };
+  const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
+
   const handleSearch = (e) => {
     setSearchKey(e.target.value);
   };
@@ -188,6 +221,83 @@ export default function AllBooks() {
 
   return (
     <>
+      <Modal
+        show={show} size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        onHide={handleClose}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <>
+            {detailData && (
+              <div className="vh-50">
+                <MDBContainer>
+                  <MDBRow className="">
+                    <MDBCol className="mt-2 mb-2">
+                      <MDBCard style={{ borderRadius: "15px" }}>
+                        <MDBCardBody className="p-4">
+                          <div className="d-flex text-black">
+                            <div className="flex-shrink-0">
+                              <MDBCardImage
+                                style={{ width: "180px", borderRadius: "10px" }}
+                                src={detailData.bookImage}
+                                alt="Generic placeholder image"
+                                fluid
+                              />
+                            </div>
+                            <div className="flex-grow-1 ms-3">
+                              <MDBCardTitle>{detailData.bookName}</MDBCardTitle>
+                              <MDBCardText>{detailData.author}</MDBCardText>
+
+                              <div
+                                className="d-flex justify-content-start rounded-3 p-2 mb-2"
+                                style={{ backgroundColor: "#efefef" }}
+                              >
+                                <div>
+                                  <p className="small text-muted mb-1">
+                                    Available Copies
+                                  </p>
+                                  <p className="mb-0">{detailData.availableCopies}</p>
+                                </div>
+                                <div className="px-3">
+                                  <p className="small text-muted mb-1">
+                                    Issue Date
+                                  </p>
+                                  <p className="mb-0">{detailData.issueDate}</p>
+                                </div>
+                                <div>
+                                  <p className="small text-muted mb-1">
+                                    Return Date
+                                  </p>
+                                  <p className="mb-0">{detailData.returnDate}</p>
+                                </div>
+                              </div>
+                              <div className="d-flex pt-1">
+                                <MDBBtn outline className="me-1 flex-grow-1">
+                                  Chat
+                                </MDBBtn>
+                                <MDBBtn className="flex-grow-1">Follow</MDBBtn>
+                              </div>
+                            </div>
+                          </div>
+                        </MDBCardBody>
+                      </MDBCard>
+                    </MDBCol>
+                  </MDBRow>
+                </MDBContainer>
+              </div>
+            )}
+          </>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="btn btn-success" onClick={handleClose}>
+            Issue Book
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div className="searchDiv">
         <Paper
           component="form"
@@ -248,7 +358,7 @@ export default function AllBooks() {
                             const value = row[column.id];
                             {
                               if (column.id === "action") {
-                                if (ctx.loggedInUserData.userType != "user") {
+                                if (ctx.loggedInUserData.userType !== "user") {
                                   return (
                                     <>
                                       <TableCell
@@ -280,7 +390,7 @@ export default function AllBooks() {
                                     >
                                       <button
                                         className="btn btn-success"
-                                        onClick={() => handelApprove(row)}
+                                        onClick={() => handelIssueBooks(row)}
                                       >
                                         Issue Book
                                       </button>

@@ -31,7 +31,7 @@ function App() {
       <Router>
         <div className="App">
           <Navbar />
-          <div className="auth-wrapper">
+          
             <Routes>
               <Route exact path="/" element={<Login onLogin={loginHandler}/>} />
               <Route exact path="/userDashboard" element={<User />} />
@@ -40,7 +40,6 @@ function App() {
               <Route path="/sign-up" element={<Register />} />
               <Route path="/staff-sign-up" element={<ARegister />} />
             </Routes>
-          </div>
         </div>
       </Router>
     </AuthContext.Provider>
