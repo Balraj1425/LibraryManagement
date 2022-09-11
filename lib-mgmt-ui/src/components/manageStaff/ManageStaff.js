@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -9,7 +10,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 
 const columns = [
-  { id: "userName", label: "Name", minWidth: 170 },
+  { id: "username", label: "Name", minWidth: 170 },
   { id: "phoneNo", label: "Phone-No", minWidth: 100 },
   {
     id: "email",
@@ -27,42 +28,43 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    userName: "Vineet",
-    phoneNo: 999999999,
-    email: "VineetDixit@gmail.com",
-  },
-  {
-    userName: "Shubham",
-    phoneNo: 999999999,
-    email: "Vinee@gmail.com",
-  },
-  {
-    userName: "Vikrant",
-    phoneNo: 999999999,
-    email: "Vineett@gmail.com",
-  },
-  {
-    userName: "Balraj",
-    phoneNo: 999999999,
-    email: "etDixit@gmail.com",
-  },
-  {
-    userName: "Dixit",
-    phoneNo: 999999999,
-    email: "Vineil.com",
-  },
-  {
-    userName: "Vivek",
-    phoneNo: 999999999,
-    email: "VineetDl.com",
-  },
-];
+// const rows = [
+//   {
+//     username: "Vineet",
+//     phoneNo: 999999999,
+//     email: "VineetDixit@gmail.com",
+//   },
+//   {
+//     username: "Shubham",
+//     phoneNo: 999999999,
+//     email: "Vinee@gmail.com",
+//   },
+//   {
+//     username: "Vikrant",
+//     phoneNo: 999999999,
+//     email: "Vineett@gmail.com",
+//   },
+//   {
+//     username: "Balraj",
+//     phoneNo: 999999999,
+//     email: "etDixit@gmail.com",
+//   },
+//   {
+//     username: "Dixit",
+//     phoneNo: 999999999,
+//     email: "Vineil.com",
+//   },
+//   {
+//     username: "Vivek",
+//     phoneNo: 999999999,
+//     email: "VineetDl.com",
+//   },
+// ];
 
 const ManageStaff = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rows, setRows] = useState();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -79,6 +81,21 @@ const ManageStaff = (props) => {
   const handelRemove = (e) => {
     console.log(e);
   };
+
+  //fetch all Staffdetails++ need to add query for issued books also
+  useEffect(() => {
+    axios
+      .get("http://localhost:3004/getAllStaffs")
+      .then((res) => {
+        console.log("res", res);
+        setRows(res.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, []);
+  console.log("staffDetails", rows);
+
   return (
     <>
       <h1>Manage Staff component</h1>
@@ -100,67 +117,73 @@ const ManageStaff = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.code}
-                      >
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          {
-                            if (column.id === "action") {
-                              return (
-                                <>
+                {rows &&
+                  rows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      return (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={row.code}
+                        >
+                          {columns.map((column) => {
+                            const value = row[column.id];
+                            {
+                              if (column.id === "action") {
+                                return (
+                                  <>
+                                    <TableCell
+                                      key={column.id}
+                                      align={column.align}
+                                    >
+                                      <button
+                                        className="btn btn-success"
+                                        onClick={() => handelEdit(row)}
+                                      >
+                                        Edit
+                                      </button>
+                                      <button
+                                        className="btn btn-danger"
+                                        onClick={() => handelRemove(row)}
+                                      >
+                                        Remove
+                                      </button>
+                                    </TableCell>
+                                  </>
+                                );
+                              } else {
+                                return (
                                   <TableCell
                                     key={column.id}
                                     align={column.align}
                                   >
-                                    <button
-                                      className="btn btn-success"
-                                      onClick={() => handelEdit(row)}
-                                    >
-                                      Edit
-                                    </button>
-                                    <button
-                                      className="btn btn-danger"
-                                      onClick={() => handelRemove(row)}
-                                    >
-                                      Remove
-                                    </button>
+                                    {column.format && typeof value === "number"
+                                      ? column.format(value)
+                                      : value}
                                   </TableCell>
-                                </>
-                              );
-                            } else {
-                              return (
-                                <TableCell key={column.id} align={column.align}>
-                                  {column.format && typeof value === "number"
-                                    ? column.format(value)
-                                    : value}
-                                </TableCell>
-                              );
+                                );
+                              }
                             }
-                          }
-                        })}
-                      </TableRow>
-                    );
-                  })}
+                          })}
+                        </TableRow>
+                      );
+                    })}
               </TableBody>
             </Table>
           </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          {rows && (
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          )}
         </Paper>
       </div>
     </>

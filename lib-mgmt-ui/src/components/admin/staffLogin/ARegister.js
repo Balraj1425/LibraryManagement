@@ -23,7 +23,7 @@ const ARegister = () => {
     };
 
     console.log({ payload });
-    axios.post("http://localhost:3004/register", payload).then((res) => {
+    axios.post("http://localhost:3004/registerStaff", payload).then((res) => {
       console.log(res);
       navigate("/sign-in");
     });

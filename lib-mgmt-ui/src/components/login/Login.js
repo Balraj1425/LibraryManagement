@@ -24,9 +24,9 @@ const Login = () => {
       password: password,
     };
     axios.post("http://localhost:3004/login", data).then((res) => {
-      console.log({res});
+      console.log({ res });
       sessionStorage.setItem("jwtToken", res.data.token);
-      if (res.data.userType === "user") {
+      if (res.data.result.userType === "user") {
         navigate("/userDashboard");
       } else {
         navigate("/adminDashboard");
@@ -36,54 +36,53 @@ const Login = () => {
 
   return (
     <>
-    <div className="auth-inner">
-
-      <form>
-        <h3>Sign In</h3>
-        <div className="mb-3">
-          <label>Email address</label>
-          <input
-            type="email"
-            className="form-control"
-            placeholder="Enter email"
-            onChange={handleEmail}
-          />
-        </div>
-        <div className="mb-3">
-          <label>Password</label>
-          <input
-            type="password"
-            className="form-control"
-            placeholder="Enter password"
-            onChange={handlePassword}
-          />
-        </div>
-        <div className="mb-3">
-          <div className="custom-control custom-checkbox">
+      <div className="auth-inner">
+        <form>
+          <h3>Sign In</h3>
+          <div className="mb-3">
+            <label>Email address</label>
             <input
-              type="checkbox"
-              className="custom-control-input"
-              id="customCheck1"
+              type="email"
+              className="form-control"
+              placeholder="Enter email"
+              onChange={handleEmail}
             />
-            <label className="custom-control-label" htmlFor="customCheck1">
-              Remember me
-            </label>
           </div>
-        </div>
-        <div className="d-grid">
-          <button
-            type="submit"
-            className="btn btn-primary"
-            onClick={handleLogin}
-          >
-            Submit
-          </button>
-        </div>
-        <p className="forgot-password text-right">
-          Forgot <a href="#">password?</a>
-        </p>
-      </form>
-    </div>
+          <div className="mb-3">
+            <label>Password</label>
+            <input
+              type="password"
+              className="form-control"
+              placeholder="Enter password"
+              onChange={handlePassword}
+            />
+          </div>
+          <div className="mb-3">
+            <div className="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                className="custom-control-input"
+                id="customCheck1"
+              />
+              <label className="custom-control-label" htmlFor="customCheck1">
+                Remember me
+              </label>
+            </div>
+          </div>
+          <div className="d-grid">
+            <button
+              type="submit"
+              className="btn btn-primary"
+              onClick={handleLogin}
+            >
+              Submit
+            </button>
+          </div>
+          <p className="forgot-password text-right">
+            Forgot <a href="#">password?</a>
+          </p>
+        </form>
+      </div>
     </>
   );
 };

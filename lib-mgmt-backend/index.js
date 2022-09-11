@@ -189,6 +189,42 @@ app.post("/register", (req, res) => {
   } catch (error) {}
 });
 
+//Routes for Staff Registration
+app.post("/registerStaff", (req, res) => {
+  try {
+    const { username, phoneNo, email, address, password, userType } = req.body;
+    if (!username || !phoneNo || !email || !password || !address || !userType) {
+      console.log("Please fill all the details");
+      res.status(422).send("Please fill all the Details");
+    }
+
+    //check if user exist or not
+    USERDETAILS.findOne({ email: email }, (err, result) => {
+      if (result) {
+        res.status(409).send("User already exist");
+      } else {
+        //saving reqbody into a variable to save into database
+        const values = new USERDETAILS(req.body);
+
+        //hashing for password
+        values.password = crypto
+          .createHash("sha256", hashKey)
+          .update(req.body.password)
+          .digest("hex");
+
+        //save user to database
+        values.save((err) => {
+          if (err) {
+            res.send(err);
+          } else {
+            res.send("Staff Registered");
+          }
+        });
+      }
+    });
+  } catch (error) {}
+});
+
 //route to add books
 //multer config
 const storage = multer.diskStorage({
@@ -238,17 +274,28 @@ app.get("/getallbooks", (req, res) => {
   });
 });
 
-//route to fetch all userdetails 
+//route to fetch all userdetails
 //need to fetch IssuedBooks data also
-app.get("/getAllUsers", (req, res)=>{
-  USERDETAILS.find({userType:"user"}, (err, result)=>{
+app.get("/getAllUsers", (req, res) => {
+  USERDETAILS.find({ userType: "user" }, (err, result) => {
     if (result) {
       res.send(result);
     } else {
       res.send("Error in fetching user details");
     }
-  })
-})
+  });
+});
+
+//Routes to get all Staff Details
+app.get("/getAllStaffs", (req, res) => {
+  USERDETAILS.find({ userType: "staff" }, (err, result) => {
+    if (result) {
+      res.send(result);
+    } else {
+      res.send("Error in fetching Staff details");
+    }
+  });
+});
 
 app.listen(port, () => {
   console.log("server started at port: ", port);
