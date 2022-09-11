@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -12,6 +12,7 @@ import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import "../allBooks/AllBooks.css";
+import AuthContext from "../../Context/auth-context";
 
 const columns = [
   { id: "bookName", label: "Book Name", minWidth: 170 },
@@ -127,9 +128,11 @@ const columns = [
 // ];
 
 export default function AllBooks() {
+  const ctx = useContext(AuthContext);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState();
+  console.log(ctx.loggedInUserData.userType)
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -215,29 +218,45 @@ export default function AllBooks() {
                             const value = row[column.id];
                             {
                               if (column.id === "action") {
-                                return (
-                                  <>
+                                if (ctx.loggedInUserData.userType != "user") {
+                                  return (
+                                    <>
+                                      <TableCell
+                                        key={column.id}
+                                        align={column.align}
+                                      >
+                                        {/* {userType === ""} */}
+                                        <button
+                                          className="btn btn-success"
+                                          onClick={() => handelApprove(row)}
+                                        >
+                                          Edit
+                                        </button>
+                                        <span>&nbsp;</span>
+                                        <button
+                                          className="btn btn-danger"
+                                          onClick={() => handelDecline(row)}
+                                        >
+                                          Delete
+                                        </button>
+                                      </TableCell>
+                                    </>
+                                  );
+                                } else {
+                                  return (
                                     <TableCell
                                       key={column.id}
                                       align={column.align}
                                     >
-                                      {/* {userType === ""} */}
                                       <button
                                         className="btn btn-success"
                                         onClick={() => handelApprove(row)}
                                       >
-                                        Edit
-                                      </button>
-                                      <span>&nbsp;</span>
-                                      <button
-                                        className="btn btn-danger"
-                                        onClick={() => handelDecline(row)}
-                                      >
-                                        Delete
+                                        Issue Book
                                       </button>
                                     </TableCell>
-                                  </>
-                                );
+                                  );
+                                }
                               } else {
                                 return (
                                   <TableCell
