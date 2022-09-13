@@ -6,6 +6,7 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
+const { Console } = require("console");
 
 const port = "3004";
 
@@ -109,9 +110,51 @@ const BookRepo = new mongoose.Schema({
   },
 });
 
+//Booking details schema
+const BookingDetails = new mongoose.Schema({
+  bookId: {
+    type: String,
+    require: true
+  },
+  userId:  {
+    type: String,
+    require: true
+  },
+  issueDate: {
+    type: String,
+    require: true
+  },
+  returnDate: {
+    type: String,
+    require: true
+  },
+  lateFee: {
+    type: Number
+  },
+  durationOfBooking: {
+    type: String
+  },
+  allotedBy: {
+    type: String
+  },
+  returnStatus: {
+    type: Boolean
+  },
+  approvalStatus: {
+    type: String
+  },
+  bookRent:{
+    type:Number,
+  },
+  remarks: {
+    type: String,
+  }	
+})
+
 //Creating a Model of a schema into a Database
 const USERDETAILS = connection.model("usersdetail", UserDetails);
 const BOOKREPO = connection.model("bookrepo", BookRepo);
+const BOOKINGDETAILS = connection.model("bookingdetails", BookingDetails);
 
 app.get("/hello", (req, res) => {
   res.send("hello");
@@ -298,7 +341,6 @@ app.get("/getAllStaffs", (req, res) => {
 });
 
 //Routes To search Books
-
 app.post("/getSearchBook", (req, res) => {
   console.log(req.body.searchKey);
   // BOOKREPO.find({
@@ -329,6 +371,60 @@ app.post("/getSearchBook", (req, res) => {
     }
   );
 });
+
+//route for issue book request
+app.post("/issueBookRequest", (req, res)=>{
+  console.log(req.body)
+  let payload = {
+    bookId: req.body.bookData._id,
+    userId: req.body.userData._id,
+    issueDate: req.body.bookData.issueDate,
+    returnDate: req.body.bookData.returnDate,
+    returnStatus: false,
+    approvalStatus:"",
+    bookRent:20
+  }
+  const values = new BOOKINGDETAILS(payload);
+  values.save((err)=>{
+    if(err){
+      console.log(err);
+      res.status(400).send(err)
+    }else{
+      res.send("book request done")
+    }
+  })
+})
+
+
+//route to get all issue requests
+app.get("/getIsuueRequests", (req, res)=>{
+  let arr=[];
+  BOOKINGDETAILS.find({approvalStatus:""}, (err, result) => {
+    if (result){
+      // console.log(result);
+
+      let resData = result.map((item, index)=>{
+        USERDETAILS.findOne({_id:item.userId}, (err, userData)=>{
+          // console.log(userData)
+          if(userData){
+            BOOKREPO.findOne({_id:item.bookId}, (err, bookData)=>{
+              // console.log(bookData)
+              let mydata = {
+                bookName: bookData.bookName,
+                username: userData.username,
+                author: bookData.author,
+                availableCopies: bookData.availableCopies
+              }
+              console.log(mydata)
+              arr.push(mydata)
+            })
+          }
+        })
+      })
+      console.log({arr})
+    }
+  })
+})
 
 app.listen(port, () => {
   console.log("server started at port: ", port);

@@ -188,14 +188,15 @@ export default function AllBooks() {
   const handelIssueBooks = (data) => {
     data.bookImage = "images/" + data.bookImage;
     let date = new Date();
-    let month = parseInt(date.getMonth())+1
-    let strDate = date.getDate()+'-'+month+'-'+date.getFullYear();
+    let month = parseInt(date.getMonth()) + 1;
+    let strDate = date.getDate() + "-" + month + "-" + date.getFullYear();
     data.issueDate = strDate;
     const returndate = new Date();
 
     returndate.setDate(returndate.getDate() + 7);
-    let returnmonth = parseInt(returndate.getMonth())+1
-    data.returnDate = returndate.getDate()+'-'+returnmonth+'-'+returndate.getFullYear();
+    let returnmonth = parseInt(returndate.getMonth()) + 1;
+    data.returnDate =
+      returndate.getDate() + "-" + returnmonth + "-" + returndate.getFullYear();
     console.log({ data });
     setDetailData(data);
     setShow(true);
@@ -219,10 +220,25 @@ export default function AllBooks() {
       });
   }, []);
 
+  const issueHandler = () => {
+    console.log("issuehandler")
+    console.log(detailData)
+    let payload = {
+      userData: ctx.loggedInUserData,
+      bookData: detailData
+    }
+    setShow(false);
+    axios.post("http://localhost:3004/issueBookRequest", payload).then((res)=>{
+      console.log(res)
+    })
+
+  }
+
   return (
     <>
       <Modal
-        show={show} size="lg"
+        show={show}
+        size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
         onHide={handleClose}
@@ -258,9 +274,9 @@ export default function AllBooks() {
                               >
                                 <div>
                                   <p className="small text-muted mb-1">
-                                    Available Copies
+                                    Amount
                                   </p>
-                                  <p className="mb-0">{detailData.availableCopies}</p>
+                                  <p className="mb-0">Rs 20</p>
                                 </div>
                                 <div className="px-3">
                                   <p className="small text-muted mb-1">
@@ -272,14 +288,44 @@ export default function AllBooks() {
                                   <p className="small text-muted mb-1">
                                     Return Date
                                   </p>
-                                  <p className="mb-0">{detailData.returnDate}</p>
+                                  <p className="mb-0">
+                                    {detailData.returnDate}
+                                  </p>
                                 </div>
                               </div>
-                              <div className="d-flex pt-1">
-                                <MDBBtn outline className="me-1 flex-grow-1">
-                                  Chat
-                                </MDBBtn>
-                                <MDBBtn className="flex-grow-1">Follow</MDBBtn>
+                              <div className="row">
+                                <div className="col-md-8">
+                                  <label>Card Holder Name</label>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Card Holder Name"
+                                  />
+                                </div>
+                                <div className="col-md-10 mb-4">
+                                  <label>Card Number</label>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Card Number"
+                                  />
+                                </div>
+                                <div className="col-md-6 mb-4">
+                                  <label>Expiration Date</label>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="mm/yy"
+                                  />
+                                </div>
+                                <div className="col-md-2 mb-4">
+                                  <label>CVV</label>
+                                  <input
+                                    type="password"
+                                    className="form-control"
+                                    maxLength="3"
+                                  />
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -293,8 +339,8 @@ export default function AllBooks() {
           </>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="btn btn-success" onClick={handleClose}>
-            Issue Book
+          <Button variant="btn btn-success" onClick={issueHandler}>
+            Pay and Issue Now
           </Button>
         </Modal.Footer>
       </Modal>
@@ -331,9 +377,9 @@ export default function AllBooks() {
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  {columns.map((column) => (
+                  {columns.map((column, index) => (
                     <TableCell
-                      key={column.id}
+                      key={index}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
                     >
@@ -346,15 +392,15 @@ export default function AllBooks() {
                 {rows &&
                   rows
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
+                    .map((row, index) => {
                       return (
                         <TableRow
                           hover
                           role="checkbox"
                           tabIndex={-1}
-                          key={row.code}
+                          key={index}
                         >
-                          {columns.map((column) => {
+                          {columns.map((column, index) => {
                             const value = row[column.id];
                             {
                               if (column.id === "action") {
@@ -362,7 +408,7 @@ export default function AllBooks() {
                                   return (
                                     <>
                                       <TableCell
-                                        key={column.id}
+                                        key={index}
                                         align={column.align}
                                       >
                                         {/* {userType === ""} */}
