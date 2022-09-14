@@ -399,31 +399,40 @@ app.post("/issueBookRequest", (req, res)=>{
 //route to get all issue requests
 app.get("/getIsuueRequests", (req, res)=>{
   let arr=[];
-  BOOKINGDETAILS.find({approvalStatus:""}, (err, result) => {
-    if (result){
-      // console.log(result);
-
-      let resData = result.map((item, index)=>{
-        USERDETAILS.findOne({_id:item.userId}, (err, userData)=>{
-          // console.log(userData)
-          if(userData){
-            BOOKREPO.findOne({_id:item.bookId}, (err, bookData)=>{
-              // console.log(bookData)
-              let mydata = {
-                bookName: bookData.bookName,
-                username: userData.username,
-                author: bookData.author,
-                availableCopies: bookData.availableCopies
-              }
-              console.log(mydata)
-              arr.push(mydata)
-            })
-          }
+  let mydata={};
+  try {    
+    const bookingdetails = BOOKINGDETAILS.find({approvalStatus:""}, (err, result) => {
+      if (result){
+        console.log(result.length)
+        let resData = result.map((item, index)=>{
+          const userData = USERDETAILS.findOne({_id:item.userId}, (err, userData)=>{
+            if(userData){
+              // console.log({userData})
+              BOOKREPO.findOne({_id:item.bookId}, (err, bookData)=>{
+                if(bookData){
+                  // console.log({bookData})
+                  mydata = {
+                    bookName: bookData.bookName,
+                    username: userData.username,
+                    author: bookData.author,
+                    availableCopies: bookData.availableCopies
+                  }
+                  // console.log(mydata)                  
+                }
+                console.log({mydata})
+                arr.push(mydata)
+                console.log({arr})
+              })
+              console.log({arr})
+            }
+          })
         })
-      })
-      console.log({arr})
-    }
-  })
+      }
+    })
+  } catch (error) {
+    
+  }
+  // console.log({arr})
 })
 
 app.listen(port, () => {
