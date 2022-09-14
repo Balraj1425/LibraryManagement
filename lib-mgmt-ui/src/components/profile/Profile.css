@@ -1,3 +1,6 @@
 .inputFields {
   width: 70%;
 }
+.hide-element {
+  display: none;
+}

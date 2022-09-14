@@ -221,18 +221,19 @@ export default function AllBooks() {
   }, []);
 
   const issueHandler = () => {
-    console.log("issuehandler")
-    console.log(detailData)
+    console.log("issuehandler");
+    console.log(detailData);
     let payload = {
       userData: ctx.loggedInUserData,
-      bookData: detailData
-    }
+      bookData: detailData,
+    };
     setShow(false);
-    axios.post("http://localhost:3004/issueBookRequest", payload).then((res)=>{
-      console.log(res)
-    })
-
-  }
+    axios
+      .post("http://localhost:3004/issueBookRequest", payload)
+      .then((res) => {
+        console.log(res);
+      });
+  };
 
   return (
     <>
@@ -402,59 +403,55 @@ export default function AllBooks() {
                         >
                           {columns.map((column, index) => {
                             const value = row[column.id];
-                            {
-                              if (column.id === "action") {
-                                if (ctx.loggedInUserData.userType !== "user") {
-                                  return (
-                                    <>
-                                      <TableCell
-                                        key={index}
-                                        align={column.align}
-                                      >
-                                        {/* {userType === ""} */}
-                                        <button
-                                          className="btn btn-success"
-                                          onClick={() => handelApprove(row)}
-                                        >
-                                          Edit
-                                        </button>
-                                        <span>&nbsp;</span>
-                                        <button
-                                          className="btn btn-danger"
-                                          onClick={() => handelDecline(row)}
-                                        >
-                                          Delete
-                                        </button>
-                                      </TableCell>
-                                    </>
-                                  );
-                                } else {
-                                  return (
-                                    <TableCell
-                                      key={column.id}
-                                      align={column.align}
-                                    >
+
+                            if (column.id === "action") {
+                              if (
+                                ctx.loggedInUserData &&
+                                ctx.loggedInUserData.userType !== "user"
+                              ) {
+                                return (
+                                  <>
+                                    <TableCell key={index} align={column.align}>
+                                      {/* {userType === ""} */}
                                       <button
                                         className="btn btn-success"
-                                        onClick={() => handelIssueBooks(row)}
+                                        onClick={() => handelApprove(row)}
                                       >
-                                        Issue Book
+                                        Edit
+                                      </button>
+                                      <span>&nbsp;</span>
+                                      <button
+                                        className="btn btn-danger"
+                                        onClick={() => handelDecline(row)}
+                                      >
+                                        Delete
                                       </button>
                                     </TableCell>
-                                  );
-                                }
+                                  </>
+                                );
                               } else {
                                 return (
                                   <TableCell
                                     key={column.id}
                                     align={column.align}
                                   >
-                                    {column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : value}
+                                    <button
+                                      className="btn btn-success"
+                                      onClick={() => handelIssueBooks(row)}
+                                    >
+                                      Issue Book
+                                    </button>
                                   </TableCell>
                                 );
                               }
+                            } else {
+                              return (
+                                <TableCell key={column.id} align={column.align}>
+                                  {column.format && typeof value === "number"
+                                    ? column.format(value)
+                                    : value}
+                                </TableCell>
+                              );
                             }
                           })}
                         </TableRow>

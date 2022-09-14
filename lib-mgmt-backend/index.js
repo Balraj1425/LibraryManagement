@@ -68,6 +68,9 @@ const UserDetails = new mongoose.Schema({
     type: Boolean,
     require: true,
   },
+  userImage: {
+    type: String,
+  },
 });
 
 //Book Repo schema
@@ -114,42 +117,42 @@ const BookRepo = new mongoose.Schema({
 const BookingDetails = new mongoose.Schema({
   bookId: {
     type: String,
-    require: true
+    require: true,
   },
-  userId:  {
+  userId: {
     type: String,
-    require: true
+    require: true,
   },
   issueDate: {
     type: String,
-    require: true
+    require: true,
   },
   returnDate: {
     type: String,
-    require: true
+    require: true,
   },
   lateFee: {
-    type: Number
+    type: Number,
   },
   durationOfBooking: {
-    type: String
+    type: String,
   },
   allotedBy: {
-    type: String
+    type: String,
   },
   returnStatus: {
-    type: Boolean
+    type: Boolean,
   },
   approvalStatus: {
-    type: String
+    type: String,
   },
-  bookRent:{
-    type:Number,
+  bookRent: {
+    type: Number,
   },
   remarks: {
     type: String,
-  }	
-})
+  },
+});
 
 //Creating a Model of a schema into a Database
 const USERDETAILS = connection.model("usersdetail", UserDetails);
@@ -359,80 +362,104 @@ app.post("/getSearchBook", (req, res) => {
     };
   }
 
-  BOOKREPO.find(
-    payload,
-    (err, result) => {
-      if (result) {
-        console.log("rr", result);
-        res.send(result);
-      } else {
-        res.send("No Data");
-      }
+  BOOKREPO.find(payload, (err, result) => {
+    if (result) {
+      console.log("rr", result);
+      res.send(result);
+    } else {
+      res.send("No Data");
     }
-  );
+  });
 });
 
 //route for issue book request
-app.post("/issueBookRequest", (req, res)=>{
-  console.log(req.body)
+app.post("/issueBookRequest", (req, res) => {
+  console.log(req.body);
   let payload = {
     bookId: req.body.bookData._id,
     userId: req.body.userData._id,
     issueDate: req.body.bookData.issueDate,
     returnDate: req.body.bookData.returnDate,
     returnStatus: false,
-    approvalStatus:"",
-    bookRent:20
-  }
+    approvalStatus: "",
+    bookRent: 20,
+  };
   const values = new BOOKINGDETAILS(payload);
-  values.save((err)=>{
-    if(err){
+  values.save((err) => {
+    if (err) {
       console.log(err);
-      res.status(400).send(err)
-    }else{
-      res.send("book request done")
+      res.status(400).send(err);
+    } else {
+      res.send("book request done");
     }
-  })
-})
-
+  });
+});
 
 //route to get all issue requests
-app.get("/getIsuueRequests", (req, res)=>{
-  let arr=[];
-  let mydata={};
-  try {    
-    const bookingdetails = BOOKINGDETAILS.find({approvalStatus:""}, (err, result) => {
-      if (result){
-        console.log(result.length)
-        let resData = result.map((item, index)=>{
-          const userData = USERDETAILS.findOne({_id:item.userId}, (err, userData)=>{
-            if(userData){
-              // console.log({userData})
-              BOOKREPO.findOne({_id:item.bookId}, (err, bookData)=>{
-                if(bookData){
-                  // console.log({bookData})
-                  mydata = {
-                    bookName: bookData.bookName,
-                    username: userData.username,
-                    author: bookData.author,
-                    availableCopies: bookData.availableCopies
-                  }
-                  // console.log(mydata)                  
+app.get("/getIssueRequests", (req, res) => {
+  let arr = [];
+  let mydata = {};
+  try {
+    const bookingdetails = BOOKINGDETAILS.find(
+      { approvalStatus: "" },
+      (err, result) => {
+        if (result) {
+          console.log(result.length);
+          let resData = result.map((item, index) => {
+            const userData = USERDETAILS.findOne(
+              { _id: item.userId },
+              (err, userData) => {
+                if (userData) {
+                  // console.log({userData})
+                  BOOKREPO.findOne({ _id: item.bookId }, (err, bookData) => {
+                    if (bookData) {
+                      // console.log({bookData})
+                      mydata = {
+                        bookName: bookData.bookName,
+                        username: userData.username,
+                        author: bookData.author,
+                        availableCopies: bookData.availableCopies,
+                      };
+                      // console.log(mydata)
+                    }
+                    console.log({ mydata });
+                    arr.push(mydata);
+                    console.log({ arr });
+                  });
+                  console.log({ arr });
                 }
-                console.log({mydata})
-                arr.push(mydata)
-                console.log({arr})
-              })
-              console.log({arr})
-            }
-          })
-        })
+              }
+            );
+          });
+        }
       }
-    })
-  } catch (error) {
-    
-  }
+    );
+  } catch (error) {}
   // console.log({arr})
+});
+
+//route to add profile pic
+app.post("/uploadProfilPic", upload.single("file"), async (req, res) => {
+  const token = req.header("jwt-token");
+  const verified = jwt.verify(token, jwtSecretKey);
+  if (verified) {
+    let result = await USERDETAILS.findOneAndUpdate(
+      { email: req.body.email },
+      { userImage: req.file.filename },
+      { new: true }
+    );
+    res.status(200).send(result)    
+  } else {
+    res.status(404).send("Invalid User request");
+  }
+});
+
+//route to get userProfileData
+app.post("/getUserProfileData", (req,res)=>{
+  USERDETAILS.findOne({email: req.body.email}, (err, result)=>{
+    console.log({result})
+    res.send(result)
+  })
 })
 
 app.listen(port, () => {
