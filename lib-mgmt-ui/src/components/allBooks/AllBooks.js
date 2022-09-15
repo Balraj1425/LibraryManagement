@@ -148,8 +148,6 @@ export default function AllBooks() {
   const [show, setShow] = useState(false);
   const [detailData, setDetailData] = useState();
 
-  // console.log(ctx.loggedInUserData.userType);
-
   // const searchInputRef = useRef();
   const [searchKey, setSearchKey] = useState("");
 
@@ -224,7 +222,7 @@ export default function AllBooks() {
     console.log("issuehandler");
     console.log(detailData);
     let payload = {
-      userData: ctx.loggedInUserData,
+      userId: sessionStorage.getItem("userId"),
       bookData: detailData,
     };
     setShow(false);
@@ -406,8 +404,7 @@ export default function AllBooks() {
 
                             if (column.id === "action") {
                               if (
-                                ctx.loggedInUserData &&
-                                ctx.loggedInUserData.userType !== "user"
+                                sessionStorage.getItem("userType") !== "user"
                               ) {
                                 return (
                                   <>

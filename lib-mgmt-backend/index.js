@@ -190,7 +190,7 @@ app.post("/login", (req, res) => {
               result: result,
               token: jwtToken,
             };
-            console.log(resultpayload);
+            // console.log(resultpayload);
             res.send(resultpayload);
           }
         }
@@ -278,7 +278,7 @@ const storage = multer.diskStorage({
     cb(null, "../lib-mgmt-ui/public/images");
   },
   filename: (req, file, cb) => {
-    console.log(file);
+    // console.log(file);
     cb(
       null,
       Date.now() +
@@ -345,7 +345,7 @@ app.get("/getAllStaffs", (req, res) => {
 
 //Routes To search Books
 app.post("/getSearchBook", (req, res) => {
-  console.log(req.body.searchKey);
+  // console.log(req.body.searchKey);
   // BOOKREPO.find({
   //   $or: [
   //     { searchKey: "harry"  },
@@ -364,7 +364,7 @@ app.post("/getSearchBook", (req, res) => {
 
   BOOKREPO.find(payload, (err, result) => {
     if (result) {
-      console.log("rr", result);
+      // console.log("rr", result);
       res.send(result);
     } else {
       res.send("No Data");
@@ -374,10 +374,10 @@ app.post("/getSearchBook", (req, res) => {
 
 //route for issue book request
 app.post("/issueBookRequest", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   let payload = {
     bookId: req.body.bookData._id,
-    userId: req.body.userData._id,
+    userId: req.body.userId,
     issueDate: req.body.bookData.issueDate,
     returnDate: req.body.bookData.returnDate,
     returnStatus: false,
@@ -387,7 +387,7 @@ app.post("/issueBookRequest", (req, res) => {
   const values = new BOOKINGDETAILS(payload);
   values.save((err) => {
     if (err) {
-      console.log(err);
+      // console.log(err);
       res.status(400).send(err);
     } else {
       res.send("book request done");
@@ -404,7 +404,7 @@ app.get("/getIssueRequests", (req, res) => {
       { approvalStatus: "" },
       (err, result) => {
         if (result) {
-          console.log(result.length);
+          // console.log(result.length);
           let resData = result.map((item, index) => {
             const userData = USERDETAILS.findOne(
               { _id: item.userId },
@@ -422,11 +422,11 @@ app.get("/getIssueRequests", (req, res) => {
                       };
                       // console.log(mydata)
                     }
-                    console.log({ mydata });
+                    // console.log({ mydata });
                     arr.push(mydata);
-                    console.log({ arr });
+                    // console.log({ arr });
                   });
-                  console.log({ arr });
+                  // console.log({ arr });
                 }
               }
             );
@@ -448,19 +448,25 @@ app.post("/uploadProfilPic", upload.single("file"), async (req, res) => {
       { userImage: req.file.filename },
       { new: true }
     );
-    res.status(200).send(result)    
+    res.status(200).send(result);
   } else {
     res.status(404).send("Invalid User request");
   }
 });
 
 //route to get userProfileData
-app.post("/getUserProfileData", (req,res)=>{
-  USERDETAILS.findOne({email: req.body.email}, (err, result)=>{
-    console.log({result})
-    res.send(result)
-  })
-})
+app.post("/getUserProfileData", (req, res) => {
+  USERDETAILS.findOne({ email: req.body.email }, (err, result) => {
+    // console.log({ result });
+    res.send(result);
+  });
+});
+
+app.put("/updateDetails", (req, res) => {
+  console.log("effewdwwdwddwwddw", req.body);
+
+  // USERDETAILS.findByIdAndUpdate({id:req.body.})
+});
 
 app.listen(port, () => {
   console.log("server started at port: ", port);

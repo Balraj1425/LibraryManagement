@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Login = (props) => {
-  console.log(props)
+  console.log(props);
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
@@ -27,10 +27,14 @@ const Login = (props) => {
     axios.post("http://localhost:3004/login", data).then((res) => {
       console.log({ res });
       sessionStorage.setItem("jwtToken", res.data.token);
+      sessionStorage.setItem("userId", res.data.result._id);
+      sessionStorage.setItem("userEmail", res.data.result.email);
+      sessionStorage.setItem("userType", res.data.result.userType);
+
       props.onLogin({
         isLoggedIn: true,
-        userDetails: res.data.result
-      })
+        userDetails: res.data.result,
+      });
       if (res.data.result.userType === "user") {
         navigate("/userDashboard");
       } else {
@@ -88,7 +92,6 @@ const Login = (props) => {
           </p> */}
         </form>
       </div>
-   
     </div>
   );
 };

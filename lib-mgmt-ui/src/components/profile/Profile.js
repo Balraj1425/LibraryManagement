@@ -20,24 +20,46 @@ const Profile = (props) => {
   const [isEditable, setIsEditable] = useState(false);
   const fileInputRef = useRef();
   const [file, setFile] = useState();
-  const [profilImage, setProfileImage] = useState(
-    "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-  );
-  const [userDataUpdated, setUserDataUpdated] = useState();
 
-  useEffect(() => {
-    axios
-      .post("http://localhost:3004/getUserProfileData", {
-        email: ctx.loggedInUserData.email,
-      })
-      .then((userRes) => {
-        console.log({ userRes });
-        setUserDataUpdated(userRes.data);
-        if(userRes.data.userImage && userRes.data.userImage !== ""){
-          setProfileImage("images/"+userRes.data.userImage)
-        }
-      });
-  }, []);
+  const imageCondition = props.userData.userImage
+    ? "images/" + props.userData.userImage
+    : "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp";
+
+  const [profilImage, setProfileImage] = useState(imageCondition);
+  const [userDataUpdated, setUserDataUpdated] = useState(props.userData);
+  const [userName, setUserName] = useState(props.userData.username);
+  const [email, setEmail] = useState(props.userData.email);
+  const [phone, setPhone] = useState(props.userData.phoneNo);
+  const [address, setaddress] = useState(props.userData.address);
+
+  console.log({ userDataUpdated });
+
+  const userNameHandler = (e) => {
+    setUserName(e.target.value);
+  };
+  const emailHandler = (e) => {
+    setEmail(e.target.value);
+  };
+  const phoneHandler = (e) => {
+    setPhone(e.target.value);
+  };
+  const addressHandler = (e) => {
+    setaddress(e.target.value);
+  };
+
+  // useEffect(() => {
+  //   axios
+  //     .post("http://localhost:3004/getUserProfileData", {
+  //       email: sessionStorage.getItem("userEmail"),
+  //     })
+  //     .then((userRes) => {
+  //       console.log({ userRes });
+  //       setUserDataUpdated(userRes.data);
+  //       if (userRes.data.userImage && userRes.data.userImage !== "") {
+  //         setProfileImage("images/" + userRes.data.userImage);
+  //       }
+  //     });
+  // }, []);
 
   const triggerFileSelector = () => {
     fileInputRef.current.click();
@@ -45,6 +67,21 @@ const Profile = (props) => {
 
   const handleEdit = () => {
     setIsEditable(!isEditable);
+    const payload = {
+      username: userName,
+      phoneNo: phone,
+      email: email,
+      address: address,
+      userId: props.userData._id,
+    };
+    axios
+      .put("http://localhost:3001/updateDetails", payload)
+      .then((res) => {
+        console.log({ res });
+      })
+      .catch((err) => {
+        console.log({ err });
+      });
   };
 
   const config = {
@@ -53,7 +90,7 @@ const Profile = (props) => {
     },
   };
 
-  //getting error, ctx gets empty and page gets reloaded  
+  //getting error, ctx gets empty and page gets reloaded
   const imgHandler = (e) => {
     e.preventDefault();
     const file = e.target.files[0];
@@ -61,15 +98,15 @@ const Profile = (props) => {
     const data = new FormData();
     data.append("file", file);
     //add user id from context
-    data.append("userId", ctx.loggedInUserData._id);
-    data.append("email", ctx.loggedInUserData.email);
+    data.append("userId", sessionStorage.getItem("userId"));
+    data.append("email", sessionStorage.getItem("userEmail"));
     console.log({ data });
-    console.log(ctx.loggedInUserData);
+
     axios
       .post("http://localhost:3004/uploadProfilPic", data, config)
       .then((res) => {
         console.log({ res });
-        // setProfileImage("images/"+res.data.userImage)
+        setProfileImage("images/" + res.data.userImage);
         // setUserDataUpdated(res.data);
       });
   };
@@ -123,12 +160,15 @@ const Profile = (props) => {
                             label="Name"
                             id="typeText"
                             type="text"
-                            value={userDataUpdated.username}
+                            value={userName}
+                            onChange={userNameHandler}
+                            // value="uhdjisdjdj"
                           />
                         )}
                         {!isEditable && (
                           <MDBCardText className="text-muted">
-                            {userDataUpdated.username}
+                            {userName}
+                            {/* jhjjk */}
                           </MDBCardText>
                         )}
                       </MDBCol>
@@ -144,12 +184,15 @@ const Profile = (props) => {
                             label="Email"
                             id="typeText"
                             type="text"
-                            value={userDataUpdated.email}
+                            value={email}
+                            onChange={emailHandler}
+                            // value="uhdjisdjdj"
                           />
                         )}
                         {!isEditable && (
                           <MDBCardText className="text-muted">
-                            {userDataUpdated.email}
+                            {email}
+                            {/* value="uhdjisdjdj" */}
                           </MDBCardText>
                         )}
                       </MDBCol>
@@ -165,12 +208,15 @@ const Profile = (props) => {
                             label="Phone"
                             id="typeText"
                             type="text"
-                            value={userDataUpdated.phoneNo}
+                            value={phone}
+                            onChange={phoneHandler}
+                            // value="uhdjisdjdj"
                           />
                         )}
                         {!isEditable && (
                           <MDBCardText className="text-muted">
-                            {userDataUpdated.phoneNo}
+                            {phone}
+                            {/* uhdjisdjdj */}
                           </MDBCardText>
                         )}
                       </MDBCol>
@@ -207,12 +253,16 @@ const Profile = (props) => {
                             label="Address"
                             id="typeText"
                             type="text"
-                            value={userDataUpdated.address}
+                            value={address}
+                            onChange={addressHandler}
+
+                            // value="uhdjisdjdj"
                           />
                         )}
                         {!isEditable && (
                           <MDBCardText className="text-muted">
-                            {userDataUpdated.address}
+                            {address}
+                            {/* ioioioioioio */}
                           </MDBCardText>
                         )}
                       </MDBCol>

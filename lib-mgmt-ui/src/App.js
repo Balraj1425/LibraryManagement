@@ -11,14 +11,13 @@ import AuthContext from "./Context/auth-context";
 import { useState } from "react";
 
 function App() {
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState();
   const loginHandler = (data) => {
-    console.log(data)
-    setIsLoggedIn(data.isLoggedIn)
-    setUserData(data.userDetails)
-  }
+    console.log(data);
+    setIsLoggedIn(data.isLoggedIn);
+    setUserData(data.userDetails);
+  };
   return (
     // <User></User>
     // <Admin></Admin>
@@ -31,15 +30,23 @@ function App() {
       <Router>
         <div className="App">
           <Navbar />
-          
-            <Routes>
-              <Route exact path="/" element={<Login onLogin={loginHandler}/>} />
-              <Route exact path="/userDashboard" element={<User />} />
-              <Route exact path="/adminDashboard" element={<Admin />} />
-              <Route path="/sign-in" element={<Login onLogin={loginHandler}/>} />
-              <Route path="/sign-up" element={<Register />} />
-              <Route path="/staff-sign-up" element={<ARegister />} />
-            </Routes>
+
+          <Routes>
+            <Route exact path="/" element={<Login onLogin={loginHandler} />} />
+            <Route
+              exact
+              path="/userDashboard"
+              element={<User userData={userData} />}
+            />
+            <Route
+              exact
+              path="/adminDashboard"
+              element={<Admin userData={userData} />}
+            />
+            <Route path="/sign-in" element={<Login onLogin={loginHandler} />} />
+            <Route path="/sign-up" element={<Register />} />
+            <Route path="/staff-sign-up" element={<ARegister />} />
+          </Routes>
         </div>
       </Router>
     </AuthContext.Provider>

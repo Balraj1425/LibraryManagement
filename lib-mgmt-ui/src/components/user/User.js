@@ -99,7 +99,8 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function User() {
+export default function User(props) {
+  console.log({ props });
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
 
@@ -220,7 +221,9 @@ export default function User() {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         {showComponent == "allBooks" && <AllBooks></AllBooks>}
-        {showComponent == "myProfile" && <Profile></Profile>}
+        {showComponent == "myProfile" && (
+          <Profile userData={props.userData}></Profile>
+        )}
         {showComponent == "bookedHistory" && <BookedHistory></BookedHistory>}
         {showComponent == "issuedBooks" && <UserIssuedbooks></UserIssuedbooks>}
       </Box>
