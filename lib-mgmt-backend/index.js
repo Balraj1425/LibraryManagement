@@ -400,6 +400,7 @@ app.get("/getIssueRequests", async (req, res) => {
       let userData = await USERDETAILS.findOne({ _id: item.userId });
       let bookData = await BOOKREPO.findOne({ _id: item.bookId });
       return {
+        bookId: bookData._id,
         bookingId: item._id,
         bookName: bookData.bookName,
         username: userData.username,
@@ -441,7 +442,9 @@ app.put("/updateDetails", (req, res) => {
   // USERDETAILS.findByIdAndUpdate({id:req.body.})
 });
 
-app.post("/getDeclineMessage", async (req, res) => {
+//Routes for Decline of book issue Request
+
+app.post("/declineissueRequest", async (req, res) => {
   console.log("===========>", req.body);
   let result = await BOOKINGDETAILS.findOneAndUpdate(
     { _id: req.body.userData.bookingId },
@@ -450,6 +453,23 @@ app.post("/getDeclineMessage", async (req, res) => {
       remarks: req.body.userData.remarks,
       approvalStatus: "Declined",
     },
+    { new: true }
+  );
+  res.send(result);
+});
+
+//Routes for approval of book issue Request
+
+app.post("/acceptIssueRequest", async (req, res) => {
+  console.log(req.body);
+  let bookData = await BOOKREPO.findByIdAndUpdate(
+    { _id: req.body.bookId },
+    { availableCopies: req.body.availableCopies - 1 },
+    { new: true }
+  );
+  let result = await BOOKINGDETAILS.findByIdAndUpdate(
+    { _id: req.body.bookingId },
+    { approvalStatus: "Issued", allotedBy: req.body.allotedBy },
     { new: true }
   );
   res.send(result);

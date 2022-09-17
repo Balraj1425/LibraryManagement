@@ -68,9 +68,18 @@ const IssueRequests = (props) => {
     setPage(0);
   };
 
-  const handelApprove = (e) => {
-    console.log("Approve");
-    console.log(e);
+  const handelApprove = (row) => {
+    console.log({ row });
+    row.allotedBy = sessionStorage.getItem("userId");
+    axios
+      .post("http://localhost:3004/acceptIssueRequest", row)
+      .then((res) => {
+        console.log(res.data);
+        setReload(!reload);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   //handelDecline on Modal
@@ -83,7 +92,7 @@ const IssueRequests = (props) => {
       userData: selectedUser,
     };
     axios
-      .post("http://localhost:3004/getDeclineMessage", payload)
+      .post("http://localhost:3004/declineissueRequest", payload)
       .then((res) => {
         console.log("=========>", res.body);
         if (res) {
