@@ -8,6 +8,12 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const columns = [
   { id: "username", label: "Name", minWidth: 170 },
@@ -91,6 +97,11 @@ const ManageUsers = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState();
+  const [open, setOpen] = useState(false);
+  const [reload, setReload] = useState(false);
+  const [userBanned, setUserBanned] = useState(false);
+  const [userActivate, setUserActivate] = useState(false);
+  const [userDeleted, setUserDeleted] = useState(false)
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -101,11 +112,48 @@ const ManageUsers = (props) => {
     setPage(0);
   };
 
-  const handelEdit = (e) => {
-    console.log(e);
+  
+  const handleRemove = (row) => {
+    console.log({row});
+    axios.post("http://localhost:3004/removeUser",{email:row.email}).then(res=>{
+      console.log({res});
+      setReload(!reload);
+      setUserDeleted(true);
+      setUserBanned(false);
+      setUserActivate(false)
+      setOpen(true);
+    })
   };
-  const handelRemove = (e) => {
-    console.log(e);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const handelActivate = (row) =>{
+    console.log({row});
+    axios.post("http://localhost:3004/activateUser",{email:row.email}).then(res=>{
+      console.log({res});
+      setUserBanned(false);
+      setUserActivate(true);
+      setUserDeleted(false);
+      setReload(!reload);
+      setOpen(true);
+    })
+  }
+
+  const handleBan = (row) => {
+    console.log({row});
+    axios.post("http://localhost:3004/banUser",{email:row.email}).then(res=>{
+      console.log({res});
+      setUserBanned(true);
+      setUserActivate(false);
+      setUserDeleted(false);
+      setReload(!reload);
+      setOpen(true);
+    })
   };
 
   //fetch all userdetails++ need to add query for issued books also
@@ -115,11 +163,12 @@ const ManageUsers = (props) => {
       .then((res) => {
         console.log("res", res);
         setRows(res.data);
+        setUserDeleted(false);
       })
       .catch((err) => {
         console.log("err", err);
       });
-  }, []);
+  }, [reload]);
 
   return (
     <>
@@ -155,41 +204,47 @@ const ManageUsers = (props) => {
                         >
                           {columns.map((column) => {
                             const value = row[column.id];
-                            {
-                              if (column.id === "action") {
-                                return (
-                                  <>
-                                    <TableCell
-                                      key={column.id}
-                                      align={column.align}
-                                    >
-                                      <button
-                                        className="btn btn-success"
-                                        onClick={() => handelEdit(row)}
-                                      >
-                                        Ban
-                                      </button>
-                                      <button
-                                        className="btn btn-danger"
-                                        onClick={() => handelRemove(row)}
-                                      >
-                                        Remove
-                                      </button>
-                                    </TableCell>
-                                  </>
-                                );
-                              } else {
-                                return (
+
+                            if (column.id === "action") {
+                              return (
+                                <>
                                   <TableCell
                                     key={column.id}
                                     align={column.align}
                                   >
-                                    {column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : value}
+                                    {row.banStatus &&
+                                      <button
+                                      className="btn btn-success"
+                                      onClick={() => handelActivate(row)}
+                                    >
+                                      Activate
+                                    </button>
+                                    }
+                                    {!row.banStatus &&
+                                    <button
+                                      className="btn btn-success"
+                                      onClick={() => handleBan(row)}
+                                    >
+                                      Ban
+                                    </button>
+                                    }
+                                    <button
+                                      className="btn btn-danger"
+                                      onClick={() => handleRemove(row)}
+                                    >
+                                      Remove
+                                    </button>
                                   </TableCell>
-                                );
-                              }
+                                </>
+                              );
+                            } else {
+                              return (
+                                <TableCell key={column.id} align={column.align}>
+                                  {column.format && typeof value === "number"
+                                    ? column.format(value)
+                                    : value}
+                                </TableCell>
+                              );
                             }
                           })}
                         </TableRow>
@@ -211,6 +266,15 @@ const ManageUsers = (props) => {
           )}
         </Paper>
       </div>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          {userBanned &&
+            "user banned successfully"
+          } 
+          {userActivate && "USer Activated Successfully"}
+          {userDeleted && "User Deleted Successfully"}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

@@ -174,25 +174,29 @@ app.post("/login", (req, res) => {
     } else {
       USERDETAILS.findOne({ email: email }, (err, result) => {
         if (result) {
-          req.body.password = crypto
-            .createHash("sha256", hashKey)
-            .update(req.body.password)
-            .digest("hex");
+          if (!result.banStatus) {
+            req.body.password = crypto
+              .createHash("sha256", hashKey)
+              .update(req.body.password)
+              .digest("hex");
 
-          if (req.body.password === result.password) {
-            //create jwt token
-            let data = {
-              email: req.body.email,
-              userType: req.body.userType,
-              time: Date(),
-            };
-            const jwtToken = jwt.sign(data, jwtSecretKey);
-            let resultpayload = {
-              result: result,
-              token: jwtToken,
-            };
-            // console.log(resultpayload);
-            res.send(resultpayload);
+            if (req.body.password === result.password) {
+              //create jwt token
+              let data = {
+                email: req.body.email,
+                userType: req.body.userType,
+                time: Date(),
+              };
+              const jwtToken = jwt.sign(data, jwtSecretKey);
+              let resultpayload = {
+                result: result,
+                token: jwtToken,
+              };
+              // console.log(resultpayload);
+              res.send(resultpayload);
+            } else {
+              res.status(400).send("user is banned");
+            }
           }
         }
       });
@@ -523,6 +527,39 @@ app.post("/allIssuedBooks", async (req, res) => {
     })
   );
   res.send(myData);
+});
+
+//route to remove user
+app.post("/removeUser", async (req, res) => {
+  console.log(req.body);
+  let result = await USERDETAILS.deleteOne({ email: req.body.email });
+  res.send("user deleted successfully");
+});
+
+//route to ban user
+app.post("/banUser", async (req, res) => {
+  console.log(req.body);
+  let result = await USERDETAILS.findOneAndUpdate(
+    { email: req.body.email },
+    { banStatus: true },
+    { new: true }
+  );
+  if (result) {
+    res.send(result);
+  }
+});
+
+//route to activate user
+app.post("/activateUser", async (req, res) => {
+  console.log(req.body);
+  let result = await USERDETAILS.findOneAndUpdate(
+    { email: req.body.email },
+    { banStatus: false },
+    { new: true }
+  );
+  if (result) {
+    res.send(result);
+  }
 });
 
 app.listen(port, () => {

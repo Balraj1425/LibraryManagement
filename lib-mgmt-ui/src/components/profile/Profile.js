@@ -43,9 +43,9 @@ const Profile = (props) => {
   const userNameHandler = (e) => {
     setUserName(e.target.value);
   };
-  const emailHandler = (e) => {
-    setEmail(e.target.value);
-  };
+  // const emailHandler = (e) => {
+  //   setEmail(e.target.value);
+  // };
   const phoneHandler = (e) => {
     setPhone(e.target.value);
   };
@@ -291,7 +291,7 @@ const Profile = (props) => {
           </MDBContainer>
         )}
       </section>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           User Data Updated Successfully
         </Alert>
