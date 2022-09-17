@@ -1,4 +1,4 @@
-import React, { useRef, useState,  useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   MDBCol,
   MDBContainer,
@@ -18,16 +18,18 @@ const Profile = (props) => {
   const fileInputRef = useRef();
   const [file, setFile] = useState();
 
-  const imageCondition = props.userData.userImage
-    ? "images/" + props.userData.userImage
-    : "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp";
+  // const imageCondition = props.userData.userImage
+  //   ? "images/" + props.userData.userImage
+  //   : "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp";
 
-  const [profilImage, setProfileImage] = useState(imageCondition);
+  const [profilImage, setProfileImage] = useState(
+    "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+  );
   const [userDataUpdated, setUserDataUpdated] = useState(props.userData);
-  const [userName, setUserName] = useState(props.userData.username);
-  const [email, setEmail] = useState(props.userData.email);
-  const [phone, setPhone] = useState(props.userData.phoneNo);
-  const [address, setaddress] = useState(props.userData.address);
+  const [userName, setUserName] = useState();
+  const [email, setEmail] = useState();
+  const [phone, setPhone] = useState();
+  const [address, setaddress] = useState();
 
   console.log({ userDataUpdated });
 
@@ -44,19 +46,23 @@ const Profile = (props) => {
     setaddress(e.target.value);
   };
 
-  // useEffect(() => {
-  //   axios
-  //     .post("http://localhost:3004/getUserProfileData", {
-  //       email: sessionStorage.getItem("userEmail"),
-  //     })
-  //     .then((userRes) => {
-  //       console.log({ userRes });
-  //       setUserDataUpdated(userRes.data);
-  //       if (userRes.data.userImage && userRes.data.userImage !== "") {
-  //         setProfileImage("images/" + userRes.data.userImage);
-  //       }
-  //     });
-  // }, []);
+  useEffect(() => {
+    axios
+      .post("http://localhost:3004/getUserProfileData", {
+        email: sessionStorage.getItem("userEmail"),
+      })
+      .then((userRes) => {
+        console.log({ userRes });
+        setUserDataUpdated(userRes.data);
+        setUserName(userRes.data.username);
+        setEmail(userRes.data.email);
+        setPhone(userRes.data.phoneNo);
+        setaddress(userRes.data.address);
+        if (userRes.data.userImage && userRes.data.userImage !== "") {
+          setProfileImage("images/" + userRes.data.userImage);
+        }
+      });
+  }, []);
 
   const triggerFileSelector = () => {
     fileInputRef.current.click();
