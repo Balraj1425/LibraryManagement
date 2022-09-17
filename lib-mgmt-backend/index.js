@@ -475,6 +475,25 @@ app.post("/acceptIssueRequest", async (req, res) => {
   res.send(result);
 });
 
+//Routes for user booking history
+
+app.post("/bookingHistory", async (req, res) => {
+  console.log(req.body.id);
+  let bookHistory = await BOOKINGDETAILS.find({ userId: req.body.id });
+  let myData = await Promise.all(
+    bookHistory.map(async (item) => {
+      let bookData = await BOOKREPO.findOne({ _id: item.bookId });
+      return {
+        remarks: item.remarks,
+        bookName: bookData.bookName,
+        author: bookData.author,
+        approvalStatus: item.approvalStatus,
+      };
+    })
+  );
+  res.send(myData);
+});
+
 app.listen(port, () => {
   console.log("server started at port: ", port);
 });
