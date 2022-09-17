@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,6 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import axios from "axios";
 
 const columns = [
   { id: "bookName", label: "Book Name", minWidth: 170 },
@@ -34,48 +35,49 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    bookName: "Harry Potter",
-    author: "J.K Rowlings",
-    userName: "Vineet",
-    availableCopies: 5,
-  },
-  {
-    bookName: "Harry Potter",
-    author: "J.K Rowlings",
-    userName: "Vineet",
-    availableCopies: 5,
-  },
-  {
-    bookName: "Harry Potter",
-    author: "J.K Rowlings",
-    userName: "Vineet",
-    availableCopies: 5,
-  },
-  {
-    bookName: "Harry Potter",
-    author: "J.K Rowlings",
-    userName: "Vineet",
-    availableCopies: 5,
-  },
-  {
-    bookName: "Harry Potter",
-    author: "J.K Rowlings",
-    userName: "Vineet",
-    availableCopies: 5,
-  },
-  {
-    bookName: "Harry Potter",
-    author: "J.K Rowlings",
-    userName: "Vineet",
-    availableCopies: 5,
-  },
-];
+// const rows = [
+//   {
+//     bookName: "Harry Potter",
+//     author: "J.K Rowlings",
+//     userName: "Vineet",
+//     availableCopies: 5,
+//   },
+//   {
+//     bookName: "Harry Potter",
+//     author: "J.K Rowlings",
+//     userName: "Vineet",
+//     availableCopies: 5,
+//   },
+//   {
+//     bookName: "Harry Potter",
+//     author: "J.K Rowlings",
+//     userName: "Vineet",
+//     availableCopies: 5,
+//   },
+//   {
+//     bookName: "Harry Potter",
+//     author: "J.K Rowlings",
+//     userName: "Vineet",
+//     availableCopies: 5,
+//   },
+//   {
+//     bookName: "Harry Potter",
+//     author: "J.K Rowlings",
+//     userName: "Vineet",
+//     availableCopies: 5,
+//   },
+//   {
+//     bookName: "Harry Potter",
+//     author: "J.K Rowlings",
+//     userName: "Vineet",
+//     availableCopies: 5,
+//   },
+// ];
 
 const IssueRequests = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rows, setRows] = useState();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -95,6 +97,18 @@ const IssueRequests = (props) => {
     console.log(e);
   };
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:3004/getIssueRequests")
+      .then((res) => {
+        console.log("res", res);
+        setRows(res.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, []);
+
   return (
     <>
       <h1>Issue Request</h1>
@@ -104,9 +118,9 @@ const IssueRequests = (props) => {
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  {columns.map((column) => (
+                  {columns.map((column, index) => (
                     <TableCell
-                      key={column.id}
+                      key={index}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
                     >
@@ -116,14 +130,14 @@ const IssueRequests = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
-                    return (
-                      <TableRow hover tabIndex={-1} key={row.code}>
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          {
+                {rows &&
+                  rows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      return (
+                        <TableRow hover tabIndex={-1} key={index}>
+                          {columns.map((column) => {
+                            const value = row[column.id];
                             if (column.id === "action") {
                               return (
                                 <>
@@ -155,23 +169,24 @@ const IssueRequests = (props) => {
                                 </TableCell>
                               );
                             }
-                          }
-                        })}
-                      </TableRow>
-                    );
-                  })}
+                          })}
+                        </TableRow>
+                      );
+                    })}
               </TableBody>
             </Table>
           </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          {rows && (
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          )}
         </Paper>
       </div>
     </>

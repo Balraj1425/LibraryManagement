@@ -395,47 +395,23 @@ app.post("/issueBookRequest", (req, res) => {
   });
 });
 
+
+
 //route to get all issue requests
-app.get("/getIssueRequests", (req, res) => {
-  let arr = [];
-  let mydata = {};
-  try {
-    const bookingdetails = BOOKINGDETAILS.find(
-      { approvalStatus: "" },
-      (err, result) => {
-        if (result) {
-          // console.log(result.length);
-          let resData = result.map((item, index) => {
-            const userData = USERDETAILS.findOne(
-              { _id: item.userId },
-              (err, userData) => {
-                if (userData) {
-                  // console.log({userData})
-                  BOOKREPO.findOne({ _id: item.bookId }, (err, bookData) => {
-                    if (bookData) {
-                      // console.log({bookData})
-                      mydata = {
-                        bookName: bookData.bookName,
-                        username: userData.username,
-                        author: bookData.author,
-                        availableCopies: bookData.availableCopies,
-                      };
-                      // console.log(mydata)
-                    }
-                    // console.log({ mydata });
-                    arr.push(mydata);
-                    // console.log({ arr });
-                  });
-                  // console.log({ arr });
-                }
-              }
-            );
-          });
-        }
-      }
-    );
-  } catch (error) {}
-  // console.log({arr})
+app.get("/getIssueRequests", async(req, res) => {
+  let bookingdetails = await BOOKINGDETAILS.find({ approvalStatus: "" });
+  let myData = await Promise.all(
+    bookingdetails.map(async(item)=>{
+      let userData = await USERDETAILS.findOne({ _id: item.userId });
+      let bookData = await BOOKREPO.findOne({ _id: item.bookId });
+      return {
+        "bookName": bookData.bookName,
+        "username": userData.username,
+        "author": bookData.author,
+        "availableCopies": bookData.availableCopies,
+      };
+    }));
+    res.send(myData)
 });
 
 //route to add profile pic
