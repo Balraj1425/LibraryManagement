@@ -110,7 +110,8 @@ const ManageUsers = (props) => {
 
   //fetch all userdetails++ need to add query for issued books also
   useEffect(() => {
-    axios.get("http://localhost:3004/getAllUsers")
+    axios
+      .get("http://localhost:3004/getAllUsers")
       .then((res) => {
         console.log("res", res);
         setRows(res.data);
@@ -141,67 +142,73 @@ const ManageUsers = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows && rows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.code}
-                      >
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          {
-                            if (column.id === "action") {
-                              return (
-                                <>
+                {rows &&
+                  rows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      return (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={row.code}
+                        >
+                          {columns.map((column) => {
+                            const value = row[column.id];
+                            {
+                              if (column.id === "action") {
+                                return (
+                                  <>
+                                    <TableCell
+                                      key={column.id}
+                                      align={column.align}
+                                    >
+                                      <button
+                                        className="btn btn-success"
+                                        onClick={() => handelEdit(row)}
+                                      >
+                                        Ban
+                                      </button>
+                                      <button
+                                        className="btn btn-danger"
+                                        onClick={() => handelRemove(row)}
+                                      >
+                                        Remove
+                                      </button>
+                                    </TableCell>
+                                  </>
+                                );
+                              } else {
+                                return (
                                   <TableCell
                                     key={column.id}
                                     align={column.align}
                                   >
-                                    <button
-                                      className="btn btn-success"
-                                      onClick={() => handelEdit(row)}
-                                    >
-                                      Edit
-                                    </button>
-                                    <button
-                                      className="btn btn-danger"
-                                      onClick={() => handelRemove(row)}
-                                    >
-                                      Remove
-                                    </button>
+                                    {column.format && typeof value === "number"
+                                      ? column.format(value)
+                                      : value}
                                   </TableCell>
-                                </>
-                              );
-                            } else {
-                              return (
-                                <TableCell key={column.id} align={column.align}>
-                                  {column.format && typeof value === "number"
-                                    ? column.format(value)
-                                    : value}
-                                </TableCell>
-                              );
+                                );
+                              }
                             }
-                          }
-                        })}
-                      </TableRow>
-                    );
-                  })}
+                          })}
+                        </TableRow>
+                      );
+                    })}
               </TableBody>
             </Table>
           </TableContainer>
-          {rows && (<TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />)}
+          {rows && (
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          )}
         </Paper>
       </div>
     </>

@@ -67,6 +67,7 @@ const UserDetails = new mongoose.Schema({
   banStatus: {
     type: Boolean,
     require: true,
+    default: false,
   },
   userImage: {
     type: String,
@@ -393,11 +394,13 @@ app.post("/issueBookRequest", (req, res) => {
 //route to get all issue requests
 app.get("/getIssueRequests", async (req, res) => {
   let bookingdetails = await BOOKINGDETAILS.find({ approvalStatus: "" });
+  console.log({ bookingdetails });
   let myData = await Promise.all(
     bookingdetails.map(async (item) => {
       let userData = await USERDETAILS.findOne({ _id: item.userId });
       let bookData = await BOOKREPO.findOne({ _id: item.bookId });
       return {
+        bookingId: item._id,
         bookName: bookData.bookName,
         username: userData.username,
         author: bookData.author,
@@ -436,6 +439,20 @@ app.put("/updateDetails", (req, res) => {
   console.log("effewdwwdwddwwddw", req.body);
 
   // USERDETAILS.findByIdAndUpdate({id:req.body.})
+});
+
+app.post("/getDeclineMessage", async (req, res) => {
+  console.log("===========>", req.body);
+  let result = await BOOKINGDETAILS.findOneAndUpdate(
+    { _id: req.body.userData.bookingId },
+    {
+      allotedBy: req.body.userData.allotedBy,
+      remarks: req.body.userData.remarks,
+      approvalStatus: "Declined",
+    },
+    { new: true }
+  );
+  res.send(result);
 });
 
 app.listen(port, () => {

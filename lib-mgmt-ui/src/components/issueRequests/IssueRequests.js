@@ -8,6 +8,9 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
 
 const columns = [
   { id: "bookName", label: "Book Name", minWidth: 170 },
@@ -39,6 +42,22 @@ const IssueRequests = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState();
+  const [show, setShow] = useState(false);
+  const [decline, setDecline] = useState();
+  const [selectedUser, setSelectedUser] = useState();
+  const [reload, setReload] = useState(false);
+
+  //Handel Modal
+  const handleShow = (row) => {
+    setShow(true);
+    setSelectedUser(row);
+    console.log({ row });
+  };
+  const handleClose = () => setShow(false);
+
+  const declineMessage = (e) => {
+    setDecline(e.target.value);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -53,9 +72,28 @@ const IssueRequests = (props) => {
     console.log("Approve");
     console.log(e);
   };
+
+  //handelDecline on Modal
   const handelDecline = (e) => {
-    console.log("Decline");
-    console.log(e);
+    console.log({ e });
+    e.preventDefault();
+    selectedUser.allotedBy = sessionStorage.getItem("userId");
+    selectedUser.remarks = decline;
+    let payload = {
+      userData: selectedUser,
+    };
+    axios
+      .post("http://localhost:3004/getDeclineMessage", payload)
+      .then((res) => {
+        console.log("=========>", res.body);
+        if (res) {
+          setReload(!reload);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    setShow(false);
   };
 
   useEffect(() => {
@@ -68,10 +106,46 @@ const IssueRequests = (props) => {
       .catch((err) => {
         console.log("err", err);
       });
-  }, []);
+  }, [reload]);
 
   return (
     <>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Decline Message</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea1"
+            >
+              <Form.Label>Enter reason to decline request</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={decline}
+                onChange={declineMessage}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handelDecline}>
+            Decline
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <h1>Issue Request</h1>
       <div>
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -114,7 +188,7 @@ const IssueRequests = (props) => {
                                     </button>
                                     <button
                                       className="btn btn-danger"
-                                      onClick={() => handelDecline(row)}
+                                      onClick={() => handleShow(row)}
                                     >
                                       Decline
                                     </button>
