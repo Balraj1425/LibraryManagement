@@ -111,7 +111,7 @@ const Admin = (props) => {
   // const drawerWidth = 240;
   const [showComponent, setShowComponent] = useState("allBooks");
 
-  const [userType, setUserType] = useState("admin");
+  const [userType, setUserType] = useState(props.userData.userType);
 
   const navigate = useNavigate();
 
@@ -190,17 +190,19 @@ const Admin = (props) => {
                 <ListItemText primary="Add Books" />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={() => showComponentHandler("manageUsers")}
-              >
-                <ListItemIcon>
-                  <ManageAccountsIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Users" />
-              </ListItemButton>
-            </ListItem>
-            {userType == "admin" && (
+            {userType !== "admin" && (
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => showComponentHandler("manageUsers")}
+                >
+                  <ListItemIcon>
+                    <ManageAccountsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Users" />
+                </ListItemButton>
+              </ListItem>
+            )}
+            {userType === "admin" && (
               <ListItem disablePadding>
                 <ListItemButton
                   onClick={() => showComponentHandler("manageStaff")}
@@ -212,17 +214,19 @@ const Admin = (props) => {
                 </ListItemButton>
               </ListItem>
             )}
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={() => showComponentHandler("issueRequest")}
-              >
-                <ListItemIcon>
-                  <HowToRegIcon />
-                </ListItemIcon>
-                <ListItemText primary="Issue Request" />
-              </ListItemButton>
-            </ListItem>
-            {userType == "admin" && (
+            {userType !== "admin" && (
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => showComponentHandler("issueRequest")}
+                >
+                  <ListItemIcon>
+                    <HowToRegIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Issue Request" />
+                </ListItemButton>
+              </ListItem>
+            )}
+            {userType === "admin" && (
               <ListItem disablePadding>
                 <ListItemButton
                   onClick={() => showComponentHandler("staffApprovalRequest")}

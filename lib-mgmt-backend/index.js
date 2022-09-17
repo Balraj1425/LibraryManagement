@@ -562,6 +562,23 @@ app.post("/activateUser", async (req, res) => {
   }
 });
 
+app.get("/getAllIssuedBooks", async (req, res)=> {
+  let result = await BOOKINGDETAILS.find({approvalStatus: 'Issued'});
+  let myData = await Promise.all(
+    result.map(async (item) => {
+      let bookData = await BOOKREPO.findOne({ _id: item.bookId });
+      return {
+        issueDate: item.issueDate,
+        bookName: bookData.bookName,
+        author: bookData.author,
+        returnDate: item.returnDate,
+        availableCopies: bookData.availableCopies
+      };
+    })
+  );
+  res.send(myData);
+})
+
 app.listen(port, () => {
   console.log("server started at port: ", port);
 });
