@@ -31,6 +31,8 @@ import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import UserIssuedbooks from "./issuedBooks/UserIssuedBooks";
 import BookedHistory from "./bookedHistory/BookedHistory";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -105,6 +107,7 @@ export default function User(props) {
   const [open, setOpen] = React.useState(true);
 
   const [showComponent, setShowComponent] = useState("allBooks");
+  const navigate = useNavigate();
 
   const showComponentHandler = (elm) => {
     setShowComponent(elm);
@@ -116,6 +119,11 @@ export default function User(props) {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const logoutHandler = () => {
+    sessionStorage.clear();
+    navigate("/sign-in");
   };
 
   return (
@@ -136,7 +144,7 @@ export default function User(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            User Dashboard
+            Library Management System
           </Typography>
         </Toolbar>
       </AppBar>
@@ -152,14 +160,14 @@ export default function User(props) {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItem disablePadding>
+          {/* <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
           <ListItem disablePadding>
             <ListItemButton onClick={() => showComponentHandler("allBooks")}>
               <ListItemIcon>
@@ -192,6 +200,14 @@ export default function User(props) {
                 <AssignmentTurnedInIcon />
               </ListItemIcon>
               <ListItemText primary="Issued Books" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton onClick={logoutHandler}>
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
             </ListItemButton>
           </ListItem>
           {/* {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (

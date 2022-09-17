@@ -12,6 +12,12 @@ import {
 } from "mdb-react-ui-kit";
 import "../profile/Profile.css";
 import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const Profile = (props) => {
   const [isEditable, setIsEditable] = useState(false);
@@ -25,11 +31,12 @@ const Profile = (props) => {
   const [profilImage, setProfileImage] = useState(
     "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
   );
-  const [userDataUpdated, setUserDataUpdated] = useState(props.userData);
+  const [userDataUpdated, setUserDataUpdated] = useState();
   const [userName, setUserName] = useState();
   const [email, setEmail] = useState();
   const [phone, setPhone] = useState();
   const [address, setaddress] = useState();
+  const [open, setOpen] = useState(false);
 
   console.log({ userDataUpdated });
 
@@ -68,23 +75,32 @@ const Profile = (props) => {
     fileInputRef.current.click();
   };
 
-  const handleEdit = () => {
-    setIsEditable(!isEditable);
+  const updateHandler = () => {
     const payload = {
       username: userName,
       phoneNo: phone,
-      email: email,
       address: address,
-      userId: props.userData._id,
+      userId: userDataUpdated._id,
     };
     axios
-      .put("http://localhost:3001/updateDetails", payload)
+      .put("http://localhost:3004/updateDetails", payload)
       .then((res) => {
         console.log({ res });
+        setOpen(true);
       })
       .catch((err) => {
         console.log({ err });
       });
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+  const handleEdit = () => {
+    setIsEditable(!isEditable);
   };
 
   const config = {
@@ -182,22 +198,10 @@ const Profile = (props) => {
                         <MDBCardText>Email</MDBCardText>
                       </MDBCol>
                       <MDBCol sm="9">
-                        {isEditable && (
-                          <MDBInput
-                            label="Email"
-                            id="typeText"
-                            type="text"
-                            value={email}
-                            onChange={emailHandler}
-                            // value="uhdjisdjdj"
-                          />
-                        )}
-                        {!isEditable && (
-                          <MDBCardText className="text-muted">
-                            {email}
-                            {/* value="uhdjisdjdj" */}
-                          </MDBCardText>
-                        )}
+                        <MDBCardText className="text-muted">
+                          {email}
+                          {/* value="uhdjisdjdj" */}
+                        </MDBCardText>
                       </MDBCol>
                     </MDBRow>
                     <hr />
@@ -273,7 +277,7 @@ const Profile = (props) => {
                   </MDBCardBody>
                   <div className="d-flex justify-content-center mb-2">
                     {isEditable && (
-                      <MDBBtn outline className="ms-1" onClick={handleEdit}>
+                      <MDBBtn outline className="ms-1" onClick={updateHandler}>
                         Update
                       </MDBBtn>
                     )}
@@ -287,6 +291,11 @@ const Profile = (props) => {
           </MDBContainer>
         )}
       </section>
+      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          User Data Updated Successfully
+        </Alert>
+      </Snackbar>
     </>
   );
 };

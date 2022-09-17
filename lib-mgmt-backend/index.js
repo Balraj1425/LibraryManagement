@@ -436,10 +436,19 @@ app.post("/getUserProfileData", (req, res) => {
   });
 });
 
-app.put("/updateDetails", (req, res) => {
+app.put("/updateDetails", async (req, res) => {
   console.log("effewdwwdwddwwddw", req.body);
 
-  // USERDETAILS.findByIdAndUpdate({id:req.body.})
+  let result = await USERDETAILS.findByIdAndUpdate(
+    { _id: req.body.userId },
+    {
+      username: req.body.username,
+      phoneNo: req.body.phoneNo,
+      address: req.body.address,
+    },
+    { new: true }
+  );
+  res.send(result);
 });
 
 //Routes for Decline of book issue Request

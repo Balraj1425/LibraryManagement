@@ -9,6 +9,7 @@ import Admin from "./components/admin/Admin";
 import User from "./components/user/User";
 import AuthContext from "./Context/auth-context";
 import { useState } from "react";
+import Logout from "./components/Logout/Logout";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -46,6 +47,7 @@ function App() {
             <Route path="/sign-in" element={<Login onLogin={loginHandler} />} />
             <Route path="/sign-up" element={<Register />} />
             <Route path="/staff-sign-up" element={<ARegister />} />
+            <Route path="/logout" element={<Logout />} />
           </Routes>
         </div>
       </Router>

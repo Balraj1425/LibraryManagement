@@ -71,8 +71,6 @@ const AddBooks = (props) => {
     });
   };
 
-
-
   return (
     <>
       <div className="container">
@@ -159,7 +157,7 @@ const AddBooks = (props) => {
             Add
           </button>
         </div>
-        <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
           <Alert
             onClose={handleClose}
             severity="success"

@@ -35,6 +35,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import { useNavigate } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const drawerWidth = 240;
 
@@ -111,6 +113,8 @@ const Admin = (props) => {
 
   const [userType, setUserType] = useState("admin");
 
+  const navigate = useNavigate();
+
   const showComponentHandler = (elm) => {
     setShowComponent(elm);
   };
@@ -121,6 +125,10 @@ const Admin = (props) => {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+  const logoutHandler = () => {
+    sessionStorage.clear();
+    navigate("/sign-in");
   };
 
   return (
@@ -142,7 +150,7 @@ const Admin = (props) => {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" noWrap component="div">
-              {userType == "admin" ? "Admin" : "Staff"} Dashboard
+              Library Management System
             </Typography>
           </Toolbar>
         </AppBar>
@@ -158,14 +166,14 @@ const Admin = (props) => {
           </DrawerHeader>
           <Divider />
           <List>
-            <ListItem disablePadding>
+            {/* <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
                   <DashboardIcon />
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" />
               </ListItemButton>
-            </ListItem>
+            </ListItem> */}
             <ListItem disablePadding>
               <ListItemButton onClick={() => showComponentHandler("allBooks")}>
                 <ListItemIcon>
@@ -242,6 +250,14 @@ const Admin = (props) => {
                   <PersonIcon />
                 </ListItemIcon>
                 <ListItemText primary="My profile" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton onClick={logoutHandler}>
+                <ListItemIcon>
+                  <LogoutIcon />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
               </ListItemButton>
             </ListItem>
           </List>
