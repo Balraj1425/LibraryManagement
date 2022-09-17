@@ -310,14 +310,9 @@ app.post("/addBook", upload.single("file"), (req, res) => {
 });
 
 // routes to fetch allbooks Data
-app.get("/getallbooks", (req, res) => {
-  BOOKREPO.find({}, (err, result) => {
-    if (result) {
-      res.send(result);
-    } else {
-      res.send("Error in fetching books");
-    }
-  });
+app.get("/getallbooks", async (req, res) => {
+  let bookData = await BOOKREPO.find({}).sort({ bookName: 1 });
+  res.send(bookData);
 });
 
 //route to fetch all userdetails
@@ -395,23 +390,22 @@ app.post("/issueBookRequest", (req, res) => {
   });
 });
 
-
-
 //route to get all issue requests
-app.get("/getIssueRequests", async(req, res) => {
+app.get("/getIssueRequests", async (req, res) => {
   let bookingdetails = await BOOKINGDETAILS.find({ approvalStatus: "" });
   let myData = await Promise.all(
-    bookingdetails.map(async(item)=>{
+    bookingdetails.map(async (item) => {
       let userData = await USERDETAILS.findOne({ _id: item.userId });
       let bookData = await BOOKREPO.findOne({ _id: item.bookId });
       return {
-        "bookName": bookData.bookName,
-        "username": userData.username,
-        "author": bookData.author,
-        "availableCopies": bookData.availableCopies,
+        bookName: bookData.bookName,
+        username: userData.username,
+        author: bookData.author,
+        availableCopies: bookData.availableCopies,
       };
-    }));
-    res.send(myData)
+    })
+  );
+  res.send(myData);
 });
 
 //route to add profile pic

@@ -35,45 +35,6 @@ const columns = [
   },
 ];
 
-// const rows = [
-//   {
-//     bookName: "Harry Potter",
-//     author: "J.K Rowlings",
-//     userName: "Vineet",
-//     availableCopies: 5,
-//   },
-//   {
-//     bookName: "Harry Potter",
-//     author: "J.K Rowlings",
-//     userName: "Vineet",
-//     availableCopies: 5,
-//   },
-//   {
-//     bookName: "Harry Potter",
-//     author: "J.K Rowlings",
-//     userName: "Vineet",
-//     availableCopies: 5,
-//   },
-//   {
-//     bookName: "Harry Potter",
-//     author: "J.K Rowlings",
-//     userName: "Vineet",
-//     availableCopies: 5,
-//   },
-//   {
-//     bookName: "Harry Potter",
-//     author: "J.K Rowlings",
-//     userName: "Vineet",
-//     availableCopies: 5,
-//   },
-//   {
-//     bookName: "Harry Potter",
-//     author: "J.K Rowlings",
-//     userName: "Vineet",
-//     availableCopies: 5,
-//   },
-// ];
-
 const IssueRequests = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);

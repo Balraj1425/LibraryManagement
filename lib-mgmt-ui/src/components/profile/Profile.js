@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext, useEffect } from "react";
+import React, { useRef, useState,  useEffect } from "react";
 import {
   MDBCol,
   MDBContainer,
@@ -11,12 +11,9 @@ import {
   MDBInput,
 } from "mdb-react-ui-kit";
 import "../profile/Profile.css";
-import AuthContext from "../../Context/auth-context";
 import axios from "axios";
 
 const Profile = (props) => {
-  const ctx = useContext(AuthContext);
-  console.log({ ctx });
   const [isEditable, setIsEditable] = useState(false);
   const fileInputRef = useRef();
   const [file, setFile] = useState();
