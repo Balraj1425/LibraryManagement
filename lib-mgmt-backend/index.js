@@ -463,7 +463,6 @@ app.put("/updateDetails", async (req, res) => {
 });
 
 //Routes for Decline of book issue Request
-
 app.post("/declineissueRequest", async (req, res) => {
   let result = await BOOKINGDETAILS.findOneAndUpdate(
     { _id: req.body.userData.bookingId },
@@ -589,6 +588,32 @@ app.get("/getAllIssuedBooks", async (req, res)=> {
 app.post("/removeStaff", async (req, res) => {
   let result = await USERDETAILS.deleteOne({ email: req.body.email });
   res.send("user deleted successfully");
+});
+
+// routes to fetch allbooks Data
+app.get("/getStaffApprovalRequest", async (req, res) => {
+  let userData = await USERDETAILS.find({approvalStatus: false});
+  res.send(userData);
+});
+
+//route to approve staff request
+app.post("/approveStaffRequest", async (req, res) => {
+  console.log(req.body);
+  let result = await USERDETAILS.findOneAndUpdate(
+    { email: req.body.email },
+    { approvalStatus: true },
+    { new: true }
+  );
+  if (result) {
+    res.send(result);
+  }
+});
+
+//route to decline staff request
+app.post("/declineStaffRequest", async (req, res) => {
+  console.log(req.body);
+  let result = await USERDETAILS.deleteOne({ email: req.body.email });
+  res.send("staff approval request declined successfully");
 });
 
 app.listen(port, () => {

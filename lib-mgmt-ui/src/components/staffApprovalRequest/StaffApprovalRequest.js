@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,12 +7,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import axios from "axios";
 
 const columns = [
-  { id: "staffName", label: "Staff Name", minWidth: 170, align: "center" },
+  { id: "username", label: "Staff Name", minWidth: 170, align: "center" },
   { id: "email", label: "Email", minWidth: 100, align: "center" },
   {
-    id: "phone",
+    id: "phoneNo",
     label: "Phone No",
     minWidth: 170,
     align: "center",
@@ -27,42 +28,56 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    staffName: "Himanshu",
-    email: "Himanshu@gmail.com",
-    phone: 8902030293,
-  },
-  {
-    staffName: "Himanshu",
-    email: "Himanshu@gmail.com",
-    phone: 8902030293,
-  },
-  {
-    staffName: "Himanshu",
-    email: "Himanshu@gmail.com",
-    phone: 8902030293,
-  },
-  {
-    staffName: "Himanshu",
-    email: "Himanshu@gmail.com",
-    phone: 8902030293,
-  },
-  {
-    staffName: "Himanshu",
-    email: "Himanshu@gmail.com",
-    phone: 8902030293,
-  },
-  {
-    staffName: "Himanshu",
-    email: "Himanshu@gmail.com",
-    phone: 8902030293,
-  },
-];
+// const rows = [
+//   {
+//     staffName: "Himanshu",
+//     email: "Himanshu@gmail.com",
+//     phone: 8902030293,
+//   },
+//   {
+//     staffName: "Himanshu",
+//     email: "Himanshu@gmail.com",
+//     phone: 8902030293,
+//   },
+//   {
+//     staffName: "Himanshu",
+//     email: "Himanshu@gmail.com",
+//     phone: 8902030293,
+//   },
+//   {
+//     staffName: "Himanshu",
+//     email: "Himanshu@gmail.com",
+//     phone: 8902030293,
+//   },
+//   {
+//     staffName: "Himanshu",
+//     email: "Himanshu@gmail.com",
+//     phone: 8902030293,
+//   },
+//   {
+//     staffName: "Himanshu",
+//     email: "Himanshu@gmail.com",
+//     phone: 8902030293,
+//   },
+// ];
 
 const StaffApprovalRequest = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rows, setRows] = useState();
+  const [reload, setReload] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3004/getStaffApprovalRequest")
+      .then((res) => {
+        console.log({ res });
+        setRows(res.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, [reload]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -73,18 +88,25 @@ const StaffApprovalRequest = (props) => {
     setPage(0);
   };
 
-  const handelApprove = (e) => {
-    console.log("Approve");
-    console.log(e);
+  const handelApprove = (row) => {
+    console.log({row});
+    axios.post("http://localhost:3004/approveStaffRequest",{email:row.email}).then(res=>{
+      console.log({res});
+      setReload(!reload);
+    })
   };
-  const handelDecline = (e) => {
-    console.log("Decline");
-    console.log(e);
+
+  const handelDecline = (row) => {
+    console.log({row});
+    axios.post("http://localhost:3004/declineStaffRequest",{email:row.email}).then(res=>{
+      console.log({res});
+      setReload(!reload);
+    })
   };
 
   return (
     <>
-      <h1>Issue Request</h1>
+      <h1>Staff Approval Request</h1>
       <div>
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
@@ -103,14 +125,15 @@ const StaffApprovalRequest = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
-                    return (
-                      <TableRow hover tabIndex={-1} key={row.code}>
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          {
+                {rows &&
+                  rows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      return (
+                        <TableRow hover tabIndex={-1} key={row.code}>
+                          {columns.map((column) => {
+                            const value = row[column.id];
+
                             if (column.id === "action") {
                               return (
                                 <>
@@ -142,23 +165,24 @@ const StaffApprovalRequest = (props) => {
                                 </TableCell>
                               );
                             }
-                          }
-                        })}
-                      </TableRow>
-                    );
-                  })}
+                          })}
+                        </TableRow>
+                      );
+                    })}
               </TableBody>
             </Table>
           </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          {rows && (
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          )}
         </Paper>
       </div>
     </>
