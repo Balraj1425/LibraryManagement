@@ -28,43 +28,12 @@ const columns = [
   },
 ];
 
-// const rows = [
-//   {
-//     username: "Vineet",
-//     phoneNo: 999999999,
-//     email: "VineetDixit@gmail.com",
-//   },
-//   {
-//     username: "Shubham",
-//     phoneNo: 999999999,
-//     email: "Vinee@gmail.com",
-//   },
-//   {
-//     username: "Vikrant",
-//     phoneNo: 999999999,
-//     email: "Vineett@gmail.com",
-//   },
-//   {
-//     username: "Balraj",
-//     phoneNo: 999999999,
-//     email: "etDixit@gmail.com",
-//   },
-//   {
-//     username: "Dixit",
-//     phoneNo: 999999999,
-//     email: "Vineil.com",
-//   },
-//   {
-//     username: "Vivek",
-//     phoneNo: 999999999,
-//     email: "VineetDl.com",
-//   },
-// ];
 
 const ManageStaff = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState();
+  const [reload, setReload] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -75,11 +44,12 @@ const ManageStaff = (props) => {
     setPage(0);
   };
 
-  const handelEdit = (e) => {
-    console.log(e);
-  };
-  const handelRemove = (e) => {
-    console.log(e);
+  const handelRemove = (row) => {
+    console.log({row});
+    axios.post("http://localhost:3004/removeStaff",{email:row.email}).then(res=>{
+      console.log({res});
+      setReload(!reload);
+    })
   };
 
   //fetch all Staffdetails++ need to add query for issued books also
@@ -93,12 +63,11 @@ const ManageStaff = (props) => {
       .catch((err) => {
         console.log("err", err);
       });
-  }, []);
-  console.log("staffDetails", rows);
+  }, [reload]);
 
   return (
     <>
-      <h1>Manage Staff component</h1>
+      <h1>Manage Staff</h1>
       <div>
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
@@ -130,41 +99,31 @@ const ManageStaff = (props) => {
                         >
                           {columns.map((column) => {
                             const value = row[column.id];
-                            {
-                              if (column.id === "action") {
-                                return (
-                                  <>
-                                    <TableCell
-                                      key={column.id}
-                                      align={column.align}
-                                    >
-                                      <button
-                                        className="btn btn-success"
-                                        onClick={() => handelEdit(row)}
-                                      >
-                                        Edit
-                                      </button>
-                                      <button
-                                        className="btn btn-danger"
-                                        onClick={() => handelRemove(row)}
-                                      >
-                                        Remove
-                                      </button>
-                                    </TableCell>
-                                  </>
-                                );
-                              } else {
-                                return (
+
+                            if (column.id === "action") {
+                              return (
+                                <>
                                   <TableCell
                                     key={column.id}
                                     align={column.align}
-                                  >
-                                    {column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : value}
+                                  >                                    
+                                    <button
+                                      className="btn btn-danger"
+                                      onClick={() => handelRemove(row)}
+                                    >
+                                      Remove
+                                    </button>
                                   </TableCell>
-                                );
-                              }
+                                </>
+                              );
+                            } else {
+                              return (
+                                <TableCell key={column.id} align={column.align}>
+                                  {column.format && typeof value === "number"
+                                    ? column.format(value)
+                                    : value}
+                                </TableCell>
+                              );
                             }
                           })}
                         </TableRow>

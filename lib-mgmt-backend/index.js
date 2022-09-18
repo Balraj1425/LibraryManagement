@@ -72,6 +72,10 @@ const UserDetails = new mongoose.Schema({
   userImage: {
     type: String,
   },
+  approvalStatus:{
+    type:Boolean,
+    default:false
+  }
 });
 
 //Book Repo schema
@@ -174,28 +178,30 @@ app.post("/login", (req, res) => {
     } else {
       USERDETAILS.findOne({ email: email }, (err, result) => {
         if (result) {
-          if (!result.banStatus) {
-            req.body.password = crypto
-              .createHash("sha256", hashKey)
-              .update(req.body.password)
-              .digest("hex");
-
-            if (req.body.password === result.password) {
-              //create jwt token
-              let data = {
-                email: req.body.email,
-                userType: req.body.userType,
-                time: Date(),
-              };
-              const jwtToken = jwt.sign(data, jwtSecretKey);
-              let resultpayload = {
-                result: result,
-                token: jwtToken,
-              };
-              // console.log(resultpayload);
-              res.send(resultpayload);
-            } else {
-              res.status(400).send("user is banned");
+          if(result.approvalStatus){
+            if (!result.banStatus) {
+              req.body.password = crypto
+                .createHash("sha256", hashKey)
+                .update(req.body.password)
+                .digest("hex");
+  
+              if (req.body.password === result.password) {
+                //create jwt token
+                let data = {
+                  email: req.body.email,
+                  userType: req.body.userType,
+                  time: Date(),
+                };
+                const jwtToken = jwt.sign(data, jwtSecretKey);
+                let resultpayload = {
+                  result: result,
+                  token: jwtToken,
+                };
+                // console.log(resultpayload);
+                res.send(resultpayload);
+              } else {
+                res.status(400).send("user is banned");
+              }
             }
           }
         }
@@ -212,6 +218,7 @@ app.post("/register", (req, res) => {
       console.log("Please fill all the details");
       res.status(422).send("Please fill all the Details");
     }
+    req.body.approvalStatus = true;
 
     //check if user exist or not
     USERDETAILS.findOne({ email: email }, (err, result) => {
@@ -458,7 +465,6 @@ app.put("/updateDetails", async (req, res) => {
 //Routes for Decline of book issue Request
 
 app.post("/declineissueRequest", async (req, res) => {
-  console.log("===========>", req.body);
   let result = await BOOKINGDETAILS.findOneAndUpdate(
     { _id: req.body.userData.bookingId },
     {
@@ -578,6 +584,12 @@ app.get("/getAllIssuedBooks", async (req, res)=> {
   );
   res.send(myData);
 })
+
+//route to remove staff
+app.post("/removeStaff", async (req, res) => {
+  let result = await USERDETAILS.deleteOne({ email: req.body.email });
+  res.send("user deleted successfully");
+});
 
 app.listen(port, () => {
   console.log("server started at port: ", port);
