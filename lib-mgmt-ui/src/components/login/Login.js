@@ -2,11 +2,26 @@ import React, { useState } from "react";
 import "../login/Login.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const Login = (props) => {
   console.log(props);
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [open, setOpen] = useState(false);
+  const [ message, setMessage] = useState();
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   const navigate = useNavigate();
 
@@ -24,23 +39,29 @@ const Login = (props) => {
       email: email,
       password: password,
     };
+    console.log("login called");
     axios.post("http://localhost:3004/login", data).then((res) => {
       console.log({ res });
-      sessionStorage.setItem("jwtToken", res.data.token);
-      sessionStorage.setItem("userId", res.data.result._id);
-      sessionStorage.setItem("userEmail", res.data.result.email);
-      sessionStorage.setItem("userType", res.data.result.userType);
-
-      props.onLogin({
-        isLoggedIn: true,
-        userDetails: res.data.result,
-      });
-      if (res.data.result.userType === "user") {
-        navigate("/userDashboard");
+      if(res.data === 'User ID is Banned'){
+        setMessage(res.data)
+        setOpen(true)
       } else {
-        navigate("/adminDashboard");
+        sessionStorage.setItem("jwtToken", res.data.token);
+        sessionStorage.setItem("userId", res.data.result._id);
+        sessionStorage.setItem("userEmail", res.data.result.email);
+        sessionStorage.setItem("userType", res.data.result.userType);
+  
+        props.onLogin({
+          isLoggedIn: true,
+          userDetails: res.data.result,
+        });
+        if (res.data.result.userType === "user") {
+          navigate("/userDashboard");
+        } else {
+          navigate("/adminDashboard");
+        }
       }
-    });
+    })
   };
 
   return (
@@ -92,7 +113,12 @@ const Login = (props) => {
           </p> */}
         </form>
       </div>
-    </div>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
+          {message}
+        </Alert>
+      </Snackbar>
+    </div>    
   );
 };
 export default Login;

@@ -202,6 +202,8 @@ app.post("/login", (req, res) => {
               } else {
                 res.status(400).send("user is banned");
               }
+            } else {
+              res.send("User ID is Banned");
             }
           }
         }
@@ -417,6 +419,7 @@ app.get("/getIssueRequests", async (req, res) => {
         username: userData.username,
         author: bookData.author,
         availableCopies: bookData.availableCopies,
+        noOfCopies: bookData.noOfCopies
       };
     })
   );
@@ -480,17 +483,21 @@ app.post("/declineissueRequest", async (req, res) => {
 
 app.post("/acceptIssueRequest", async (req, res) => {
   console.log(req.body);
-  let bookData = await BOOKREPO.findByIdAndUpdate(
-    { _id: req.body.bookId },
-    { availableCopies: req.body.availableCopies - 1 },
-    { new: true }
-  );
-  let result = await BOOKINGDETAILS.findByIdAndUpdate(
-    { _id: req.body.bookingId },
-    { approvalStatus: "Issued", allotedBy: req.body.allotedBy },
-    { new: true }
-  );
-  res.send(result);
+  if(req.body.availableCopies > 0){
+    let bookData = await BOOKREPO.findByIdAndUpdate(
+      { _id: req.body.bookId },
+      { availableCopies: req.body.availableCopies - 1 },
+      { new: true }
+    );
+    let result = await BOOKINGDETAILS.findByIdAndUpdate(
+      { _id: req.body.bookingId },
+      { approvalStatus: "Issued", allotedBy: req.body.allotedBy },
+      { new: true }
+    );
+    res.send(result);
+  } else {
+    res.send("outofstock")
+  }
 });
 
 //Routes for user booking history

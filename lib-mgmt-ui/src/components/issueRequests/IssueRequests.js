@@ -11,6 +11,12 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const columns = [
   { id: "bookName", label: "Book Name", minWidth: 170 },
@@ -46,6 +52,8 @@ const IssueRequests = (props) => {
   const [decline, setDecline] = useState();
   const [selectedUser, setSelectedUser] = useState();
   const [reload, setReload] = useState(false);
+  const [alertMessage, setAlertMessage] = useState();
+  const [open, setOpen] = useState(false);
 
   //Handel Modal
   const handleShow = (row) => {
@@ -54,6 +62,13 @@ const IssueRequests = (props) => {
     console.log({ row });
   };
   const handleClose = () => setShow(false);
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   const declineMessage = (e) => {
     setDecline(e.target.value);
@@ -69,11 +84,15 @@ const IssueRequests = (props) => {
   };
 
   const handelApprove = (row) => {
-    console.log({ row });
     row.allotedBy = sessionStorage.getItem("userId");
+    console.log({ row });
     axios
       .post("http://localhost:3004/acceptIssueRequest", row)
       .then((res) => {
+        if(res.data == "outofstock"){
+          setAlertMessage("Book out of stock");
+          setOpen(true)
+        }
         console.log(res.data);
         setReload(!reload);
       })
@@ -233,6 +252,11 @@ const IssueRequests = (props) => {
           )}
         </Paper>
       </div>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="warning" sx={{ width: "100%" }}>
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
