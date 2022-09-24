@@ -172,7 +172,7 @@ const ManageUsers = (props) => {
 
   return (
     <>
-      <h1>Manage Users component</h1>
+      <h1>Manage Users</h1>
       <div>
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
           <TableContainer sx={{ maxHeight: 440 }}>

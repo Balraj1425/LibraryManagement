@@ -45,7 +45,7 @@ const Login = (props) => {
       if(res.data === 'User ID is Banned'){
         setMessage(res.data)
         setOpen(true)
-      } else if( res.data === "Invalid User"){
+      } else if( res.data === "Invalid User" || res.data === "Appraval pending"){
         setMessage(res.data)
         setOpen(true)
       } else {

@@ -8,6 +8,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const columns = [
   { id: "username", label: "Name", minWidth: 170 },
@@ -34,6 +40,15 @@ const ManageStaff = (props) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState();
   const [reload, setReload] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [ message, setMessage] = useState();
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -48,6 +63,8 @@ const ManageStaff = (props) => {
     console.log({row});
     axios.post("http://localhost:3004/removeStaff",{email:row.email}).then(res=>{
       console.log({res});
+      setMessage("Staff deleted successfully");
+      setOpen(true)
       setReload(!reload);
     })
   };
@@ -145,6 +162,11 @@ const ManageStaff = (props) => {
           )}
         </Paper>
       </div>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
+          {message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

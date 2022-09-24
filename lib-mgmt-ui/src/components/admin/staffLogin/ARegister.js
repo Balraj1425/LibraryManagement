@@ -1,6 +1,12 @@
 import axios from "axios";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const ARegister = () => {
   const navigate = useNavigate();
@@ -10,6 +16,15 @@ const ARegister = () => {
   const emailInputRef = useRef();
   const addressInputRef = useRef();
   const passwordInputRef = useRef();
+  const [open, setOpen] = useState(false);
+  const [ message, setMessage] = useState();
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   const registerHandler = (event) => {
     event.preventDefault();
@@ -25,6 +40,8 @@ const ARegister = () => {
     console.log({ payload });
     axios.post("http://localhost:3004/registerStaff", payload).then((res) => {
       console.log(res);
+      setMessage("Request send to Admin for approval");
+      setOpen(true)
       navigate("/sign-in");
     });
   };
@@ -96,16 +113,17 @@ const ARegister = () => {
             <button
               type="submit"
               className="btn btn-primary"
-              onClick={registerHandler}
-            >
+              onClick={registerHandler}            >
               Submit
             </button>
           </div>
-          <p className="forgot-password text-right">
-            Forgot <a href="#">password?</a>
-          </p>
         </form>
       </div>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
+          {message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
