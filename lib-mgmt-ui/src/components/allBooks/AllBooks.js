@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -12,10 +12,10 @@ import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import "../allBooks/AllBooks.css";
-import AuthContext from "../../Context/auth-context";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 import {
   MDBCol,
   MDBContainer,
@@ -25,8 +25,10 @@ import {
   MDBCardText,
   MDBCardBody,
   MDBCardImage,
-  MDBBtn,
 } from "mdb-react-ui-kit";
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const columns = [
   { id: "bookName", label: "Book Name", minWidth: 170 },
@@ -54,93 +56,6 @@ const columns = [
   },
 ];
 
-// const rows = [
-//   {
-//     bookName: "Harry Potter",
-//     bookId: 1,
-//     author: "JK Rowling",
-//     status: true,
-//     searchKey: ["harry", "Potter", "Jk", "Rowling", "goblet"],
-//     bookType: "fiction",
-//     publisher: "abc publisher",
-//     bookImage: "/Images/harry.jpg",
-//     noOfCopies: 11,
-//     availableCopies: 5,
-//   },
-//   {
-//     bookName: "Harry Potter",
-//     bookId: 2,
-//     author: "JK Rowling",
-//     status: true,
-//     searchKey: ["harry", "Potter", "Jk", "Rowling", "goblet"],
-//     bookType: "fiction",
-//     publisher: "abc publisher",
-//     bookImage: "/Images/harry.jpg",
-//     noOfCopies: 11,
-//     availableCopies: 5,
-//   },
-//   {
-//     bookName: "Harry Potter",
-//     bookId: 3,
-//     author: "JK Rowling",
-//     status: true,
-//     searchKey: ["harry", "Potter", "Jk", "Rowling", "goblet"],
-//     bookType: "fiction",
-//     publisher: "abc publisher",
-//     bookImage: "/Images/harry.jpg",
-//     noOfCopies: 11,
-//     availableCopies: 5,
-//   },
-//   {
-//     bookName: "Harry Potter",
-//     bookId: 4,
-//     author: "JK Rowling",
-//     status: true,
-//     searchKey: ["harry", "Potter", "Jk", "Rowling", "goblet"],
-//     bookType: "fiction",
-//     publisher: "abc publisher",
-//     bookImage: "/Images/harry.jpg",
-//     noOfCopies: 11,
-//     availableCopies: 5,
-//   },
-//   {
-//     bookName: "Harry Potter",
-//     bookId: 5,
-//     author: "JK Rowling",
-//     status: true,
-//     searchKey: ["harry", "Potter", "Jk", "Rowling", "goblet"],
-//     bookType: "fiction",
-//     publisher: "abc publisher",
-//     bookImage: "/Images/harry.jpg",
-//     noOfCopies: 11,
-//     availableCopies: 5,
-//   },
-//   {
-//     bookName: "Harry Potter",
-//     bookId: 6,
-//     author: "JK Rowli",
-//     status: true,
-//     searchKey: ["harry", "Potter", "Jk", "Rowling", "goblet"],
-//     bookType: "fiction",
-//     publisher: "abc publisher",
-//     bookImage: "/Images/harry.jpg",
-//     noOfCopies: 11,
-//     availableCopies: 5,
-//   },
-//   {
-//     bookName: "Harry Potter",
-//     bookId: 7,
-//     author: "JK Rowling",
-//     status: true,
-//     searchKey: ["harry", "Potter", "Jk", "Rowling", "goblet"],
-//     bookType: "fiction",
-//     publisher: "abc publisher",
-//     bookImage: "/Images/harry.jpg",
-//     noOfCopies: 11,
-//     availableCopies: 5,
-//   },
-// ];
-
 export default function AllBooks(props) {
   // const ctx = useContext(AuthContext);
   const [page, setPage] = React.useState(0);
@@ -149,6 +64,7 @@ export default function AllBooks(props) {
   const [show, setShow] = useState(false);
   const [detailData, setDetailData] = useState();
   const [modalShow, setModalShow] = React.useState(false);
+  const [reload, setReload] = useState(false);
 
   // const searchInputRef = useRef();
   const [searchKey, setSearchKey] = useState("");
@@ -158,6 +74,8 @@ export default function AllBooks(props) {
   const [searchKeyInputRef, setsearchKeyInputRef] = useState();
   const [noOfCopiesInputRef, setnoOfCopiesInputRef] = useState();
   const [bookId, setBookId] = useState();
+  const [open, setOpen] = useState(false);
+  const [ message, setMessage] = useState();
 
   // const bookNameInputRef = useRef();
   // const authorInputRef = useRef();
@@ -216,8 +134,22 @@ export default function AllBooks(props) {
     setsearchKeyInputRef(e.target.value);
   };
 
-  const handleDeleteBook = (e) => {
-    console.log(e);
+  const handleDeleteBook = (row) => {
+    console.log({row});
+    axios
+      .post("http://localhost:3004/deleteBook", {_id:row._id})
+      .then((res) => {
+        console.log({ res });
+        if (res) {
+          setReload(!reload);
+          setMessage("Book Deleted Successfully");
+          setOpen(true)
+        }
+      })
+      .catch((err) => {
+        console.log({ err });
+      });
+
   };
 
   const updateBookData = (e) => {
@@ -237,6 +169,9 @@ export default function AllBooks(props) {
         console.log({ res });
         if (res) {
           setModalShow(false);
+          setReload(!reload);
+          setMessage("Book Updated Successfully");
+          setOpen(true)
         }
       })
       .catch((err) => {
@@ -262,6 +197,12 @@ export default function AllBooks(props) {
   };
   const handleClose = () => setShow(false);
   // const handleShow = () => setShow(true);
+  const handleAlertClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   const handleSearch = (e) => {
     setSearchKey(e.target.value);
@@ -277,7 +218,7 @@ export default function AllBooks(props) {
       .catch((err) => {
         console.log("err", err);
       });
-  }, []);
+  }, [reload]);
 
   const issueHandler = () => {
     console.log("issuehandler");
@@ -290,7 +231,9 @@ export default function AllBooks(props) {
     axios
       .post("http://localhost:3004/issueBookRequest", payload)
       .then((res) => {
-        console.log(res);
+        console.log({res});
+        setMessage("Book isse request send to Admin");
+        setOpen(true)
       });
   };
 
@@ -373,6 +316,7 @@ export default function AllBooks(props) {
           </div>
         </Modal.Body>
         <Modal.Footer>
+          <Button onClick={()=>setModalShow(false)}>Cancel</Button>
           <Button onClick={updateBookData}>Update</Button>
         </Modal.Footer>
       </Modal>
@@ -570,7 +514,7 @@ export default function AllBooks(props) {
                               } else {
                                 return (
                                   <TableCell
-                                    key={column.id}
+                                    key={index}
                                     align={column.align}
                                   >
                                     <button
@@ -584,7 +528,7 @@ export default function AllBooks(props) {
                               }
                             } else {
                               return (
-                                <TableCell key={column.id} align={column.align}>
+                                <TableCell key={index} align={column.align}>
                                   {column.format && typeof value === "number"
                                     ? column.format(value)
                                     : value}
@@ -611,6 +555,11 @@ export default function AllBooks(props) {
           )}
         </Paper>
       </div>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleAlertClose}>
+        <Alert onClose={handleAlertClose} severity="success" sx={{ width: "100%" }}>
+          {message}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

@@ -21,6 +21,11 @@ const Navbar = (props) => {
                     Sign up
                   </Link>
                 </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to={"/staff-sign-up"}>
+                    Staff Sign up
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>

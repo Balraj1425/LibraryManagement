@@ -206,6 +206,8 @@ app.post("/login", (req, res) => {
               res.send("User ID is Banned");
             }
           }
+        } else {
+          res.send("Invalid User")
         }
       });
     }
@@ -623,6 +625,7 @@ app.post("/declineStaffRequest", async (req, res) => {
   res.send("staff approval request declined successfully");
 });
 
+//route to update book details
 app.post("/updateBooks", async (req, res) => {
   console.log(req.body);
   const payload = {
@@ -638,6 +641,12 @@ app.post("/updateBooks", async (req, res) => {
   if (result) {
     res.send(result);
   }
+});
+
+//route to remove book
+app.post("/deleteBook", async (req, res) => {
+  let result = await BOOKREPO.deleteOne({ _id: req.body._id });
+  res.send("Book deleted successfully");
 });
 
 app.listen(port, () => {

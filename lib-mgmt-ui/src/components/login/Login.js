@@ -45,6 +45,9 @@ const Login = (props) => {
       if(res.data === 'User ID is Banned'){
         setMessage(res.data)
         setOpen(true)
+      } else if( res.data === "Invalid User"){
+        setMessage(res.data)
+        setOpen(true)
       } else {
         sessionStorage.setItem("jwtToken", res.data.token);
         sessionStorage.setItem("userId", res.data.result._id);
