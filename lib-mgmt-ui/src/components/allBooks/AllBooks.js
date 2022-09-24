@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -15,6 +15,7 @@ import "../allBooks/AllBooks.css";
 import AuthContext from "../../Context/auth-context";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+
 import {
   MDBCol,
   MDBContainer,
@@ -140,16 +141,29 @@ const columns = [
 //   },
 // ];
 
-export default function AllBooks() {
+export default function AllBooks(props) {
   // const ctx = useContext(AuthContext);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState();
   const [show, setShow] = useState(false);
   const [detailData, setDetailData] = useState();
+  const [modalShow, setModalShow] = React.useState(false);
 
   // const searchInputRef = useRef();
   const [searchKey, setSearchKey] = useState("");
+  const [bookNameInputRef, setbookNameInputRef] = useState();
+  const [authorInputRef, setauthorInputRef] = useState();
+  const [publisherInputRef, setpublisherInputRef] = useState();
+  const [searchKeyInputRef, setsearchKeyInputRef] = useState();
+  const [noOfCopiesInputRef, setnoOfCopiesInputRef] = useState();
+  const [bookId, setBookId] = useState();
+
+  // const bookNameInputRef = useRef();
+  // const authorInputRef = useRef();
+  // const publisherInputRef = useRef();
+  // const noOfCopiesInputRef = useRef();
+  // const searchKeyInputRef = useRef();
 
   const handelSearch = (e) => {
     e.preventDefault();
@@ -175,12 +189,59 @@ export default function AllBooks() {
     setPage(0);
   };
 
-  const handelApprove = (e) => {
+  const handleEditBook = (row) => {
+    console.log({ row });
+    setModalShow(true);
+    setbookNameInputRef(row.bookName);
+    setauthorInputRef(row.author);
+    setpublisherInputRef(row.publisher);
+    setsearchKeyInputRef(row.searchKey);
+    setnoOfCopiesInputRef(row.noOfCopies);
+    setBookId(row._id);
+  };
+
+  const handleChangeBookName = (e) => {
+    setbookNameInputRef(e.target.value);
+  };
+  const handleChangeAuthor = (e) => {
+    setauthorInputRef(e.target.value);
+  };
+  const handleChangeNoOfCopies = (e) => {
+    setnoOfCopiesInputRef(e.target.value);
+  };
+  const handleChangePublisher = (e) => {
+    setpublisherInputRef(e.target.value);
+  };
+  const handleChangeSearchKey = (e) => {
+    setsearchKeyInputRef(e.target.value);
+  };
+
+  const handleDeleteBook = (e) => {
     console.log(e);
   };
 
-  const handelDecline = (e) => {
-    console.log(e);
+  const updateBookData = (e) => {
+    e.preventDefault();
+    const payload = {
+      _id: bookId,
+      bookName: bookNameInputRef,
+      author: authorInputRef,
+      noOfCopies: noOfCopiesInputRef,
+      publisher: publisherInputRef,
+      searchKey: searchKeyInputRef,
+    };
+
+    axios
+      .post("http://localhost:3004/updateBooks", payload)
+      .then((res) => {
+        console.log({ res });
+        if (res) {
+          setModalShow(false);
+        }
+      })
+      .catch((err) => {
+        console.log({ err });
+      });
   };
 
   const handelIssueBooks = (data) => {
@@ -235,6 +296,86 @@ export default function AllBooks() {
 
   return (
     <>
+      <Modal
+        show={modalShow}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Modal heading
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h4>Centered Modal</h4>
+          <div className="row">
+            <div className="col-md-6 mb-4">
+              <label>Book Name</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Book Name"
+                // ref={bookNameInputRef}
+                name="bookName"
+                value={bookNameInputRef}
+                onChange={handleChangeBookName}
+              />
+            </div>
+            <div className="col-md-6 mb-4">
+              <label>Author</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Author"
+                // ref={authorInputRef}
+                name="author"
+                value={authorInputRef}
+                onChange={handleChangeAuthor}
+              />
+            </div>
+            <div className="col-md-6 mb-4">
+              <label>Publisher</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Publisher"
+                // ref={publisherInputRef}
+                name="publisher"
+                value={publisherInputRef}
+                onChange={handleChangePublisher}
+              />
+            </div>
+            <div className="col-md-6 mb-4">
+              <label>No Of Copies</label>
+              <input
+                type="Number"
+                className="form-control"
+                placeholder="No Of Copies"
+                // ref={noOfCopiesInputRef}
+                name="noOfCopies"
+                value={noOfCopiesInputRef}
+                onChange={handleChangeNoOfCopies}
+              />
+            </div>
+            <div className="col-md-6 mb-4">
+              <label>Serach Keys</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Serach Keys"
+                // ref={searchKeyInputRef}
+                name="searchKey"
+                value={searchKeyInputRef}
+                onChange={handleChangeSearchKey}
+              />
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={updateBookData}>Update</Button>
+        </Modal.Footer>
+      </Modal>
       <Modal
         show={show}
         size="lg"
@@ -412,14 +553,14 @@ export default function AllBooks() {
                                       {/* {userType === ""} */}
                                       <button
                                         className="btn btn-success"
-                                        onClick={() => handelApprove(row)}
+                                        onClick={() => handleEditBook(row)}
                                       >
                                         Edit
                                       </button>
                                       <span>&nbsp;</span>
                                       <button
                                         className="btn btn-danger"
-                                        onClick={() => handelDecline(row)}
+                                        onClick={() => handleDeleteBook(row)}
                                       >
                                         Delete
                                       </button>

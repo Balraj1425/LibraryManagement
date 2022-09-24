@@ -72,10 +72,10 @@ const UserDetails = new mongoose.Schema({
   userImage: {
     type: String,
   },
-  approvalStatus:{
-    type:Boolean,
-    default:false
-  }
+  approvalStatus: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 //Book Repo schema
@@ -178,13 +178,13 @@ app.post("/login", (req, res) => {
     } else {
       USERDETAILS.findOne({ email: email }, (err, result) => {
         if (result) {
-          if(result.approvalStatus){
+          if (result.approvalStatus) {
             if (!result.banStatus) {
               req.body.password = crypto
                 .createHash("sha256", hashKey)
                 .update(req.body.password)
                 .digest("hex");
-  
+
               if (req.body.password === result.password) {
                 //create jwt token
                 let data = {
@@ -419,7 +419,7 @@ app.get("/getIssueRequests", async (req, res) => {
         username: userData.username,
         author: bookData.author,
         availableCopies: bookData.availableCopies,
-        noOfCopies: bookData.noOfCopies
+        noOfCopies: bookData.noOfCopies,
       };
     })
   );
@@ -483,7 +483,7 @@ app.post("/declineissueRequest", async (req, res) => {
 
 app.post("/acceptIssueRequest", async (req, res) => {
   console.log(req.body);
-  if(req.body.availableCopies > 0){
+  if (req.body.availableCopies > 0) {
     let bookData = await BOOKREPO.findByIdAndUpdate(
       { _id: req.body.bookId },
       { availableCopies: req.body.availableCopies - 1 },
@@ -496,7 +496,7 @@ app.post("/acceptIssueRequest", async (req, res) => {
     );
     res.send(result);
   } else {
-    res.send("outofstock")
+    res.send("outofstock");
   }
 });
 
@@ -574,8 +574,8 @@ app.post("/activateUser", async (req, res) => {
   }
 });
 
-app.get("/getAllIssuedBooks", async (req, res)=> {
-  let result = await BOOKINGDETAILS.find({approvalStatus: 'Issued'});
+app.get("/getAllIssuedBooks", async (req, res) => {
+  let result = await BOOKINGDETAILS.find({ approvalStatus: "Issued" });
   let myData = await Promise.all(
     result.map(async (item) => {
       let bookData = await BOOKREPO.findOne({ _id: item.bookId });
@@ -584,12 +584,12 @@ app.get("/getAllIssuedBooks", async (req, res)=> {
         bookName: bookData.bookName,
         author: bookData.author,
         returnDate: item.returnDate,
-        availableCopies: bookData.availableCopies
+        availableCopies: bookData.availableCopies,
       };
     })
   );
   res.send(myData);
-})
+});
 
 //route to remove staff
 app.post("/removeStaff", async (req, res) => {
@@ -599,7 +599,7 @@ app.post("/removeStaff", async (req, res) => {
 
 // routes to fetch allbooks Data
 app.get("/getStaffApprovalRequest", async (req, res) => {
-  let userData = await USERDETAILS.find({approvalStatus: false});
+  let userData = await USERDETAILS.find({ approvalStatus: false });
   res.send(userData);
 });
 
@@ -621,6 +621,23 @@ app.post("/declineStaffRequest", async (req, res) => {
   console.log(req.body);
   let result = await USERDETAILS.deleteOne({ email: req.body.email });
   res.send("staff approval request declined successfully");
+});
+
+app.post("/updateBooks", async (req, res) => {
+  console.log(req.body);
+  const payload = {
+    bookName: req.body.bookName,
+    publisher: req.body.publisher,
+    author: req.body.author,
+    searchKey: req.body.searchKey,
+    noOfCopies: req.body.noOfCopies,
+  };
+  let result = await BOOKREPO.findOneAndUpdate({ _id: req.body._id }, payload, {
+    new: true,
+  });
+  if (result) {
+    res.send(result);
+  }
 });
 
 app.listen(port, () => {
