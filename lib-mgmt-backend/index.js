@@ -206,10 +206,10 @@ app.post("/login", (req, res) => {
               res.send("User ID is Banned");
             }
           } else {
-            res.send("Appraval pending")
+            res.send("Appraval pending");
           }
         } else {
-          res.send("Invalid User")
+          res.send("Invalid User");
         }
       });
     }

@@ -143,7 +143,7 @@ const Profile = (props) => {
                       src={profilImage}
                       alt="avatar"
                       className="rounded-circle mb-4"
-                      style={{ width: "150px" }}
+                      style={{ width: "150px", height: "150px" }}
                       fluid
                     />
                     <div className="d-flex justify-content-center mb-2">
